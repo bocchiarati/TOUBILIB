@@ -44,6 +44,26 @@ services:
     volumes:
       - ./sql:/var/sql
 
+  toubipatient.db:
+    image: 'postgres:latest'
+    env_file: ./toubipatient.env
+    ports:
+      - '5436:5432'
+    networks:
+      - toubilib.net
+    volumes:
+      - ./sql:/var/sql
+
+  toubiauth.db:
+    image: 'postgres:latest'
+    env_file: ./toubiauthdb.env
+    ports:
+      - '5438:5432'
+    networks:
+      - toubilib.net
+    volumes:
+      - ./sql:/var/sql
+
 
   #
   # service administration des bases sql
