@@ -23,6 +23,26 @@ services:
 
     # service toubiprat.db : base de données postgresql pour les praticiens
 
+  toubiauth.db:
+    image: 'postgres:latest'
+    env_file: ./toubiauthdb.env
+    ports:
+      - '5432:5432'
+    networks:
+      - toubilib.net
+    volumes:
+      - ./sql:/var/sql
+
+  toubipatient.db:
+    image: 'postgres:latest'
+    env_file: toubipatientdb.env.dist
+    ports:
+      - '5432:5432'
+    networks:
+      - toubilib.net
+    volumes:
+      - ./sql:/var/sql
+      -
   toubiprati.db:
     image: 'postgres:latest'
     env_file: ./toubipratdb.env
@@ -32,7 +52,6 @@ services:
       - toubilib.net
     volumes:
       - ./sql:/var/sql
-
 
   toubirdv.db:
     image: 'postgres:latest'
