@@ -42,7 +42,8 @@ services:
       - toubilib.net
     volumes:
       - ./sql:/var/sql
-      -
+
+
   toubiprati.db:
     image: 'postgres:latest'
     env_file: ./toubipratdb.env
