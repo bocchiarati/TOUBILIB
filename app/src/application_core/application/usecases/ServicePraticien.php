@@ -1,8 +1,7 @@
 <?php
 
 namespace toubilib\core\application\usecases;
-
-
+use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 
 
 class ServicePraticien implements ServicePraticienInterface
