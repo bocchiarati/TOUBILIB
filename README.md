@@ -1,3 +1,3 @@
 # Projet TOUBILIB
-## Participants :
+## CONTRIBUTEURS :
 ### TULINE LEVEQUE & SOFIEN CHERCHARI
