@@ -31,7 +31,7 @@ services:
     networks:
       - toubilib.net
     volumes:
-      - ./sql:/var/sql
+      - ./sql/toubiprat:/docker-entrypoint-initdb.d
 
 
   toubirdv.db:
@@ -42,7 +42,7 @@ services:
     networks:
       - toubilib.net
     volumes:
-      - ./sql:/var/sql
+      - ./sql/toubirdv:/docker-entrypoint-initdb.d
 
   toubipatient.db:
     image: 'postgres:latest'
@@ -52,7 +52,7 @@ services:
     networks:
       - toubilib.net
     volumes:
-      - ./sql:/var/sql
+      - ./sql/toubipat:/docker-entrypoint-initdb.d
 
   toubiauth.db:
     image: 'postgres:latest'
@@ -62,7 +62,7 @@ services:
     networks:
       - toubilib.net
     volumes:
-      - ./sql:/var/sql
+      - ./sql/toubiauth:/docker-entrypoint-initdb.d
 
 
   #
