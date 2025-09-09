@@ -3,5 +3,5 @@
 namespace toubilib\infra\repositories\interface;
 
 interface PraticienRepositoryInterface {
-    public function getPraticiens();
+    public function getPraticiens() : array;
 }

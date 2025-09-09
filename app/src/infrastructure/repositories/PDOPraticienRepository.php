@@ -4,8 +4,9 @@ namespace toubilib\infra\repositories;
 
 
 
-class PDOPraticienRepository implements PraticienRepositoryInterface
-{
+use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
+
+class PDOPraticienRepository implements PraticienRepositoryInterface {
 
 
     private \PDO $pdo;
@@ -13,5 +14,8 @@ class PDOPraticienRepository implements PraticienRepositoryInterface
     public function __construct(\PDO $pdo) {
         $this->pdo = $pdo;
     }
- 
+
+    public function getPraticiens() : array {
+
+    }
 }
