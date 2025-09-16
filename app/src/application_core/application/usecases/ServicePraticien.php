@@ -1,6 +1,7 @@
 <?php
 
 namespace toubilib\core\application\usecases;
+use Respect\Validation\Rules\Date;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 
 
@@ -18,5 +19,9 @@ class ServicePraticien implements ServicePraticienInterface
 
     public function listerPraticiens(): array {
     	return $this->praticienRepository->getPraticiens();
+    }
+
+    public function listerRDV(string $debut, string $fin, string $praticien_id): array {
+        return $this->praticienRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
     }
 }
