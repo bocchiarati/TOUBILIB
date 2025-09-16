@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\App;
+use toubilib\api\actions\HomeAction;
 
 
-return function( \Slim\App $app):\Slim\App {
-
-
-
+return function( App $app): App {
     $app->get('/', HomeAction::class);
-
-  
 
     return $app;
 };

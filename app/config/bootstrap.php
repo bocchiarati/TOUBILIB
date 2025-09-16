@@ -1,16 +1,19 @@
 <?php
 
 use DI\ContainerBuilder;
+use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
-use toubilib\api\middlewares\Cors;
 
-$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ );
+$dotenv = Dotenv::createImmutable(__DIR__ );
 $dotenv->load();
 
 
+$builder = new ContainerBuilder();
+$builder->useAutowiring(false);
+$builder->addDefinitions(__DIR__ . '/settings.php');
 
-$app = AppFactory::create();
-
+$c = $builder->build();
+$app = AppFactory::createFromContainer($c);
 
 $app->addBodyParsingMiddleware();
 $app->addRoutingMiddleware();

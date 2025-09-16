@@ -1,39 +1,38 @@
 <?php
 
 use Psr\Container\ContainerInterface;
-use jira\api\actions\GetAllUserStoriesAction;
-use jira\core\application\ports\spi\UserStoryRepository;
-use jira\core\application\ports\api\UserStoryServiceInterface;
-use jira\core\application\usecases\UserStoryService;
-use jira\infra\repositories\PgUserStoryRepository;
+use toubilib\api\actions\HomeAction;
+use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
+use toubilib\infra\repositories\PDOPraticienRepository;
 
 return [
-
     // settings
     'displayErrorDetails' => true,
     'logs.dir' => __DIR__ . '/../var/logs',
-    'jira.db.config' => __DIR__ . '/jira.db.ini',
+    'db.config' => __DIR__ . '/.env',
     
     // application
-    GetAllUserStoriesAction::class=> function (ContainerInterface $c) {
-        return new GetAllUserStoriesAction($c->get(UserStoryServiceInterface::class));
+    HomeAction::class=> function (ContainerInterface $c) {
+        return new HomeAction($c->get(PraticienRepositoryInterface::class));
     },
 
-    // service
-    UserStoryServiceInterface::class => function (ContainerInterface $c) {
-        return new UserStoryService($c->get(UserStoryRepository::class));
-    },
+//    // service
+//    UserStoryServiceInterface::class => function (ContainerInterface $c) {
+//        return new UserStoryService($c->get(UserStoryRepository::class));
+//    },
 
     // infra
-     'jira.pdo' => function (ContainerInterface $c) {
-        $config = parse_ini_file($c->get('jira.db.config'));
-        $dsn = "{$config['driver']}:host={$config['host']};dbname={$config['database']}";
-        $user = $config['username'];
-        $password = $config['password'];
+     'prat.pdo' => function (ContainerInterface $c) {
+        $config = parse_ini_file($c->get('db.config'));
+        $dsn = "{$config['prat.driver']}:host={$config['prat.host']};dbname={$config['prat.database']}";
+        $user = $config['prat.username'];
+        $password = $config['prat.password'];
         return new \PDO($dsn, $user, $password, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
     },
 
-    UserStoryRepository::class => fn(ContainerInterface $c) => new PgUserStoryRepository($c->get('jira.pdo')),
-    
+//    UserStoryRepository::class => fn(ContainerInterface $c) => new PgUserStoryRepository($c->get('jira.pdo')),
+    PraticienRepositoryInterface::class => function (ContainerInterface $c) {
+        return new PDOPraticienRepository($c->get("prat.pdo"));
+    },
 ];
 
