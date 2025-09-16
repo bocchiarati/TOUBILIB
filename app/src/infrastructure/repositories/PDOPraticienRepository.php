@@ -2,9 +2,6 @@
 
 namespace toubilib\infra\repositories;
 
-
-
-use App\application_core\application\exceptions\DatabaseException;
 use PDO;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 

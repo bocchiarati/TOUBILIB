@@ -7,7 +7,7 @@ use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\ServicePraticien;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
-class HomeAction {
+class PraticiensAction {
     private ServicePraticienInterface $servicePraticien;
 
     public function __construct(ServicePraticien $servicePraticien) {
