@@ -17,7 +17,8 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
     }
 
     public function getPraticiens() : array {
-        $query = $this->pdo->query("SELECT id, nom, prenom, ville, email FROM praticien");
+        $query = $this->pdo->query("SELECT praticien.id, nom, prenom, ville, email, specialite.libelle as specialite FROM praticien
+                                          INNER JOIN specialite ON praticien.specialite_id = specialite.id");
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 }
