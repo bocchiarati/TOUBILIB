@@ -9,7 +9,7 @@ use toubilib\infra\repositories\PDOPraticienRepository;
 return [
     // SERVICES
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
-        return new PDOPraticienRepository($c->get("prat.pdo"));
+        return new PDOPraticienRepository($c->get("prat.pdo"), $c->get("rdv.pdo"));
     },
 
     ServicePraticienInterface::class => function (ContainerInterface $c) {
