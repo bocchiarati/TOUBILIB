@@ -7,7 +7,7 @@ use toubilib\api\actions\RDVAction;
 
 
 return function( App $app): App {
-    $app->get("/rdv", RDVAction::class);
+    $app->get("/rdv/{id}", RDVAction::class);
     $app->get('/', HomeAction::class);
 
     return $app;

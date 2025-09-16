@@ -15,7 +15,11 @@ class RDVAction {
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-        $response->getBody()->write(json_encode($this->servicePraticien->listerRDV("1999-01-01", "2025-12-02", "4305f5e9-be5a-4ccf-8792-7e07d7017363")));
+        $id = $args['id'] ?? null;
+        if(is_null($id)) {
+            $response->getBody()->write(json_encode(["Praticien introuvable"]));
+        }
+        $response->getBody()->write(json_encode($this->servicePraticien->listerRDV("1999-01-01", "2025-12-02", $id)));
         return $response->withHeader("Content-Type", "application/json");
     }
 }
