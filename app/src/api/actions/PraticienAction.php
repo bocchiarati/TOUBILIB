@@ -1,0 +1,26 @@
+<?php
+
+namespace toubilib\api\actions;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\Psr7\Request;
+use Slim\Routing\RouteContext;
+use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
+use toubilib\core\application\usecases\ServicePraticien;
+use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
+
+class PraticienAction {
+    private ServicePraticienInterface $servicePraticien;
+
+    public function __construct(ServicePraticien $servicePraticien) {
+        $this->servicePraticien = $servicePraticien;
+    }
+
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+        $id = RouteContext::fromRequest($request)
+            ->getRoute()
+            ->getArguments()['id'];
+        $response->getBody()->write(json_encode($this->servicePraticien->getPraticien($id)));
+        return $response->withHeader("Content-Type", "application/json");
+    }
+}
