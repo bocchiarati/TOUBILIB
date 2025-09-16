@@ -23,4 +23,10 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id");
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getCreneauxOccupees(string $debut, string $fin, string $praticien_id): array {
+        // FORMAT DATE : YYYY-MM-DD
+        $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE date_heure_debut BETWEEN '$debut' AND '$fin' AND praticien_id = '$praticien_id'");
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
