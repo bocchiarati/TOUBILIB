@@ -21,12 +21,4 @@ class ServicePraticien implements ServicePraticienInterface {
     public function getPraticien($id): array {
         return $this->praticienRepository->getPraticien($id);
     }
-
-    public function listerRDV(string $debut, string $fin, string $praticien_id): array {
-        return $this->praticienRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
-    }
-
-    public function getRDV($id_prat, $id_rdv): array {
-        return $this->praticienRepository->getRDV($id_prat, $id_rdv);
-    }
 }
