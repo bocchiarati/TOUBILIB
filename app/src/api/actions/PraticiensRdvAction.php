@@ -3,14 +3,13 @@
 namespace toubilib\api\actions;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
-use toubilib\core\application\usecases\ServicePraticien;
+use toubilib\core\application\usecases\interfaces\ServiceRdvInterface;
 
 class PraticiensRdvAction {
-    private ServicePraticienInterface $servicePraticien;
+    private ServiceRdvInterface $serviceRdv;
 
-    public function __construct(ServicePraticien $servicePraticien) {
-        $this->servicePraticien = $servicePraticien;
+    public function __construct(ServiceRdvInterface $serviceRdv) {
+        $this->serviceRdv = $serviceRdv;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
@@ -21,7 +20,7 @@ class PraticiensRdvAction {
         if(is_null($id)) {
             $response->getBody()->write(json_encode(["Praticien introuvable"]));
         }
-        $response->getBody()->write(json_encode($this->servicePraticien->listerRDV($date_debut, $date_fin, $id)));
+        $response->getBody()->write(json_encode($this->serviceRdv->listerRDV($date_debut, $date_fin, $id)));
         return $response->withHeader("Content-Type", "application/json");
     }
 }
