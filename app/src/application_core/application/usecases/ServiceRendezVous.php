@@ -4,8 +4,8 @@ namespace toubilib\core\application\usecases;
 
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
-use toubilib\api\dtos\InputRdvDTO;
 use toubilib\api\dtos\InputRendezVousDTO;
+use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -13,15 +13,15 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function __construct(RendezVousRepositoryInterface $rendezVousRepository)
     {
-        $this->praticienRepository = $praticienRepository;
+        $this->rendezVousRepository = $rendezVousRepository;
     }
 
     public function listerRDV(string $debut, string $fin, string $praticien_id): array {
-        return $this->praticienRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
+        return $this->rendezVousRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
     }
 
     public function getRDV($id_prat, $id_rdv): array {
-        return $this->praticienRepository->getRDV($id_prat, $id_rdv);
+        return $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
     }
 
     public function creerRendezVous(InputRendezVousDTO $dto) {

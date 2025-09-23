@@ -5,14 +5,12 @@ namespace toubilib\api\actions;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Routing\RouteContext;
-use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
-use toubilib\core\application\usecases\interfaces\ServiceRdvInterface;
-use toubilib\core\application\usecases\ServicePraticien;
+use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 
 class PraticiensRdvDetailsAction {
-    private ServiceRdvInterface $serviceRdv;
+    private ServiceRendezVousInterface $serviceRdv;
 
-    public function __construct(ServiceRdvInterface $serviceRdv) {
+    public function __construct(ServiceRendezVousInterface $serviceRdv) {
         $this->serviceRdv = $serviceRdv;
     }
 

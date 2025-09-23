@@ -2,9 +2,9 @@
 
 use Psr\Container\ContainerInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
-use toubilib\core\application\usecases\interfaces\ServiceRdvInterface;
+use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\core\application\usecases\ServicePraticien;
-use toubilib\core\application\usecases\ServiceRdv;
+use toubilib\core\application\usecases\ServiceRendezVous;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 use toubilib\infra\repositories\PDOPraticienRepository;
@@ -24,8 +24,8 @@ return [
         return new ServicePraticien($c->get(PraticienRepositoryInterface::class));
     },
 
-    ServiceRdvInterface::class => function (ContainerInterface $c) {
-        return new ServiceRdv($c->get(PraticienRepositoryInterface::class));
+    ServiceRendezVousInterface::class => function (ContainerInterface $c) {
+        return new ServiceRendezVous($c->get(RendezVousRepositoryInterface::class));
     },
 ];
 
