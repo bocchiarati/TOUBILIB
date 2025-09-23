@@ -24,7 +24,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         return $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
     }
 
-    public function creerRendezVous(InputRendezVousDTO $dto) {
-        return $this->rendezVousRepository->createRdv($dto);
+    public function creerRendezVous(InputRendezVousDTO $dto): void {
+        $this->rendezVousRepository->createRdv($dto);
     }
 }

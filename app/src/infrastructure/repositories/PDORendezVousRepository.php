@@ -5,6 +5,7 @@ namespace toubilib\infra\repositories;
 
 use DateTime;
 use Exception;
+use Faker\Core\Uuid;
 use PDO;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
@@ -118,7 +119,16 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         return false;
     }
 
-    public function createRdv($pdo): array {
-        // TODO: Implement createRdv() method.
+    public function createRdv($dto) : void
+    {
+        try {
+            $id = \Ramsey\Uuid\Uuid::uuid4();
+            $query = $this->rdv_pdo->query("INSERT INTO rdv (id, patient_id, praticien_id, date_heure_debut, date_heure_fin, duree, motif_visite)
+                      VALUES ('$id', '$dto->patient_id', '$dto->praticien_id', '$dto->date_heure_debut', '$dto->date_heure_fin',
+                      '$dto->duree', '$dto->motif_visite')");
+        } catch (\Throwable) {
+            throw new Exception("Erreur lors de la creation du rendez vous.");
+        }
+        
     }
 }

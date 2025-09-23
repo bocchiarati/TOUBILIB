@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Container\ContainerInterface;
+use toubilib\api\actions\CreateRdvAction;
 use toubilib\api\actions\PraticiensRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
@@ -21,6 +22,9 @@ return [
     },
     PraticiensRdvDetailsAction::class=> function (ContainerInterface $c) {
         return new PraticiensRdvDetailsAction($c->get(ServiceRendezVousInterface::class));
+    },
+    CreateRdvAction::class=> function (ContainerInterface $c) {
+        return new CreateRdvAction($c->get(ServiceRendezVousInterface::class));
     },
 ];
 
