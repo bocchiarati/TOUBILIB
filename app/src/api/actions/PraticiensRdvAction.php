@@ -3,7 +3,6 @@
 namespace toubilib\api\actions;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Respect\Validation\Rules\Date;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\ServicePraticien;
 
