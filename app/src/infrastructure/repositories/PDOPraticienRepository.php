@@ -56,4 +56,15 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
         $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE date_heure_debut BETWEEN '$debut' AND '$fin' AND praticien_id = '$praticien_id'");
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getRDV(string $id_prat, string $id_rdv): array {
+        try {
+            $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
+            return $query->fetch(PDO::FETCH_ASSOC);
+            //tester s'il n'y a qu'un résultat et le renvoyer
+            //s'il y a plusieurs résultats alors on renvoie une erreur
+        } catch (\Throwable $e) {
+            throw new \Exception("Erreur lors de la reception des rendez vous.");
+        }
+    }
 }

@@ -7,4 +7,5 @@ interface ServicePraticienInterface
     public function listerPraticiens(): array;
     public function getPraticien($id): array;
     public function listerRDV(string $debut, string $fin, string $praticien_id): array;
+    public function getRDV($id_prat, $id_rdv): array;
 }

@@ -5,6 +5,7 @@ use Slim\App;
 use toubilib\api\actions\PraticiensRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
+use toubilib\api\actions\PraticiensRdvDetailsAction;
 
 
 return function( App $app): App {

@@ -1,13 +1,14 @@
 <?php
 
 namespace toubilib\api\actions;
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Routing\RouteContext;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\ServicePraticien;
-use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
-class PraticiensAction {
+class PraticiensRdvDetailsAction {
     private ServicePraticienInterface $servicePraticien;
 
     public function __construct(ServicePraticien $servicePraticien) {
@@ -15,7 +16,13 @@ class PraticiensAction {
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-        $response->getBody()->write(json_encode($this->servicePraticien->listerPraticiens()));
+        $id = RouteContext::fromRequest($request)
+            ->getRoute()
+            ->getArguments()['id'];
+        $rdv_id = RouteContext::fromRequest($request)
+            ->getRoute()
+            ->getArguments()['rdv_id'];
+        $response->getBody()->write(json_encode($this->servicePraticien->getRDV($id, $rdv_id)));
         return $response->withHeader("Content-Type", "application/json");
     }
 }

@@ -3,11 +3,9 @@
 namespace toubilib\api\actions;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Psr7\Request;
 use Slim\Routing\RouteContext;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\ServicePraticien;
-use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
 class PraticienAction {
     private ServicePraticienInterface $servicePraticien;
