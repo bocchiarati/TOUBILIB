@@ -2,7 +2,7 @@
 
 use Psr\Container\ContainerInterface;
 use toubilib\api\actions\HomeAction;
-use toubilib\api\actions\RDVAction;
+use toubilib\api\actions\PraticiensRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
@@ -15,8 +15,8 @@ return [
     PraticienAction::class=> function (ContainerInterface $c) {
         return new PraticienAction($c->get(ServicePraticienInterface::class));
     },
-    RDVAction::class=> function (ContainerInterface $c) {
-        return new RDVAction($c->get(ServicePraticienInterface::class));
+    PraticiensRdvAction::class=> function (ContainerInterface $c) {
+        return new PraticiensRdvAction($c->get(ServicePraticienInterface::class));
     },
 ];
 

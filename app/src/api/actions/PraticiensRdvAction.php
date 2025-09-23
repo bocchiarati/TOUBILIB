@@ -7,7 +7,7 @@ use Respect\Validation\Rules\Date;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\ServicePraticien;
 
-class RDVAction {
+class PraticiensRdvAction {
     private ServicePraticienInterface $servicePraticien;
 
     public function __construct(ServicePraticien $servicePraticien) {
