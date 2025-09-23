@@ -4,6 +4,8 @@ namespace toubilib\infra\repositories;
 
 
 
+use _PHPStan_2d0955352\Nette\Neon\Exception;
+use DateTime;
 use PDO;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
@@ -53,7 +55,35 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
 
     public function getCreneauxOccupees(string $debut, string $fin, string $praticien_id): array {
         // FORMAT DATE : YYYY-MM-DD
+        if(!$this->estDateValide($debut)){
+            throw new Exception("format date de début invalide");
+        }
+
+        if($this->estDateValide($fin)) {
+            if(strlen($fin) <= 10 ){
+                $fin = $fin . " 23:59:59";
+            }
+        }
+
+        else {
+            throw new Exception("format date de fin invalide");
+        }
         $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE date_heure_debut BETWEEN '$debut' AND '$fin' AND praticien_id = '$praticien_id'");
         return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function estDateValide($date) {
+        // Essayer le format complet avec heure
+        $formats = ['Y-m-d H:i:s', 'Y-m-d'];
+
+        foreach ($formats as $format) {
+            $d = DateTime::createFromFormat($format, $date);
+
+            // Vérifie que la date a bien été créée, et qu'elle correspond exactement au format
+            if ($d && $d->format($format) === $date) {
+                return true;
+            }
+        }
+        return false;
     }
 }
