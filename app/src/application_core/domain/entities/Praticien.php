@@ -1,6 +1,6 @@
 <?php
 
-namespace toubilib\core\domain\entities\praticien;
+namespace toubilib\core\domain\entities;
 
 
 use Exception;
@@ -18,8 +18,7 @@ class Praticien {
     /**
      * @throws Exception
      */
-    public function __get(string $property)
-    {
+    public function __get(string $property) {
         if (property_exists($this, $property)) {
             return $this->$property;
         }
