@@ -102,9 +102,12 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
     public function getRDV(string $id_prat, string $id_rdv): array {
         try {
             $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
-            return $query->fetch(PDO::FETCH_ASSOC);
-            //tester s'il n'y a qu'un résultat et le renvoyer
-            //s'il y a plusieurs résultats alors on renvoie une erreur
+            $res = $query->fetchAll(PDO::FETCH_ASSOC);
+            if (sizeof($res) > 1) {
+                throw new Exception("Erreur : plusieurs rendez vous ont été trouvés.");
+            } else {
+                return $res[0];
+            }
         } catch (\Throwable $e) {
             throw new Exception("Erreur lors de la reception des rendez vous.");
         }
