@@ -10,7 +10,7 @@ use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 class PraticiensAction {
     private ServicePraticienInterface $servicePraticien;
 
-    public function __construct(ServicePraticien $servicePraticien) {
+    public function __construct(ServicePraticienInterface $servicePraticien) {
         $this->servicePraticien = $servicePraticien;
     }
 

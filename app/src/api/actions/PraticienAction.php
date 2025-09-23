@@ -10,7 +10,7 @@ use toubilib\core\application\usecases\ServicePraticien;
 class PraticienAction {
     private ServicePraticienInterface $servicePraticien;
 
-    public function __construct(ServicePraticien $servicePraticien) {
+    public function __construct(ServicePraticienInterface $servicePraticien) {
         $this->servicePraticien = $servicePraticien;
     }
 
