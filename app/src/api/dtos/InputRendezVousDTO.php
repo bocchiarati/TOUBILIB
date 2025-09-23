@@ -5,7 +5,7 @@ namespace toubilib\api\dtos;
 
 use Exception;
 
-class InputRdvDTO {
+class InputRendezVousDTO {
     private string $patient_id;
     private string $praticien_id;
     private string $date_heure_debut;
