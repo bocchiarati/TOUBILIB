@@ -3,9 +3,8 @@
 namespace toubilib\infra\repositories;
 
 
-
-use _PHPStan_2d0955352\Nette\Neon\Exception;
 use DateTime;
+use Exception;
 use PDO;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
@@ -26,7 +25,7 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id");
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Throwable $e) {
-            //todo
+            throw new Exception("Erreur lors de la reception des praticiens.");
         }
     }
 
@@ -49,7 +48,7 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
 
             return $array;
         } catch (\Throwable $e) {
-            //todo
+            throw new Exception("Erreur lors de la reception du praticien.");
         }
     }
 
@@ -68,7 +67,7 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
         else {
             throw new Exception("format date de fin invalide");
         }
-        $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE date_heure_debut BETWEEN '$debut' AND '$fin' AND praticien_id = '$praticien_id'");
+        $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE date_heure_debut BETWEEN '$debut' AND '$fin' AND praticien_id = '$praticien_id'");
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -79,7 +78,7 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             //tester s'il n'y a qu'un résultat et le renvoyer
             //s'il y a plusieurs résultats alors on renvoie une erreur
         } catch (\Throwable $e) {
-            throw new \Exception("Erreur lors de la reception des rendez vous.");
+            throw new Exception("Erreur lors de la reception des rendez vous.");
         }
     }
 
