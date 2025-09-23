@@ -11,7 +11,7 @@ use toubilib\api\actions\PraticiensRdvDetailsAction;
 return function( App $app): App {
     $app->get('/praticiens', PraticiensAction::class);
     $app->get('/praticiens/{id}', PraticienAction::class);
-    $app->get("/praticiens/{id}/rdv", PraticiensRdvAction::class);
+    $app->get("/praticiens/{id}/rdv/{date_debut}/{date_fin}", PraticiensRdvAction::class); // format date : 2000-01-01, 2025-12-02
     $app->get("/praticiens/{id}/rdv/{rdv_id}", PraticiensRdvDetailsAction::class);
     return $app;
 };
