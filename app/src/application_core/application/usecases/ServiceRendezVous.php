@@ -2,18 +2,23 @@
 
 namespace toubilib\core\application\usecases;
 
+use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
+use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
-use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 use toubilib\api\dtos\InputRendezVousDTO;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
     private RendezVousRepositoryInterface $rendezVousRepository;
+    private ServicePraticienInterface $servicePraticien;
+    private ServicePatientInterface $servicePatient;
 
-    public function __construct(RendezVousRepositoryInterface $rendezVousRepository)
+    public function __construct(RendezVousRepositoryInterface $rendezVousRepository, ServicePraticienInterface $servicePraticien, ServicePatientInterface $servicePatient)
     {
         $this->rendezVousRepository = $rendezVousRepository;
+        $this->servicePraticien = $servicePraticien;
+        $this->servicePatient = $servicePatient;
     }
 
     public function listerRDV(string $debut, string $fin, string $praticien_id): array {
@@ -26,6 +31,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function creerRendezVous(InputRendezVousDTO $dto): array {
         try {
+            $this->servicePraticien->getPraticien($dto->praticien_id);
+            $this->servicePatient->getPatient($dto->patient_id);
             $this->rendezVousRepository->createRdv($dto);
             return [
                 'success' => true,
