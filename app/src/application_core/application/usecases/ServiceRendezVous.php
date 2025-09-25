@@ -29,7 +29,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $this->rendezVousRepository->createRdv($dto);
             return [
                 'success' => true,
-                "message" => "RDV Créer"
+                "message" => "RDV Créé"
             ];
         } catch (\Throwable $th) {
             return [
