@@ -34,7 +34,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         } catch (\Throwable $th) {
             return [
                 "success" => false,
-                "message" => $th->getMessage()
+                "message" => "RDV n'a pu etre créer"
             ];
         }
     }
