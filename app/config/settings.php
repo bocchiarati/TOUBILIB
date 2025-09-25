@@ -27,5 +27,13 @@ return [
         $password = $config['rdv.password'];
         return new \PDO($dsn, $user, $password, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
     },
+
+    'pat.pdo' => function (ContainerInterface $c) {
+        $config = parse_ini_file($c->get('db.config'));
+        $dsn = "{$config['pat.driver']}:host={$config['pat.host']};dbname={$config['pat.database']}";
+        $user = $config['pat.username'];
+        $password = $config['pat.password'];
+        return new \PDO($dsn, $user, $password, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+    },
 ];
 
