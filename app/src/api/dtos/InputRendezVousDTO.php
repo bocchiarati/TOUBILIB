@@ -13,13 +13,13 @@ class InputRendezVousDTO {
     private int $duree;
     private string $motif_visite;
 
-    public function __construct($patient_id, $praticien_id, $date_heure_debut, $date_heure_fin, $duree, $motif_visite) {
-        $this->duree = $duree;
-        $this->motif_visite = $motif_visite;
-        $this->patient_id = $patient_id;
-        $this->praticien_id = $praticien_id;
-        $this->date_heure_debut = $date_heure_debut;
-        $this->date_heure_fin = $date_heure_fin;
+    public function __construct($data) {
+        $this->duree = $data['duree'];
+        $this->motif_visite = $data['motif'];
+        $this->patient_id = $data['id_pat'];
+        $this->praticien_id = $data['id_prat'];
+        $this->date_heure_debut = $data['date_heure_debut'];
+        $this->date_heure_fin = $data['date_heure_fin'];
     }
 
     public function __get(string $property) {
