@@ -18,7 +18,7 @@ class ServicePraticien implements ServicePraticienInterface {
     	return $this->praticienRepository->getPraticiens();
     }
 
-    public function getPraticien($id): array {
+    public function getPraticien(string $id): array {
         return $this->praticienRepository->getPraticien($id);
     }
 }
