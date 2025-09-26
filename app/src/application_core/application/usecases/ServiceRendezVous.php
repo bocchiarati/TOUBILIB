@@ -51,12 +51,12 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $this->rendezVousRepository->createRdv($dto);
             return [
                 'success' => true,
-                "message" => "RDV Créé"
+                "message" => "RDV cree"
             ];
         } catch (\Throwable $th) {
             return [
                 "success" => false,
-                "message" => "RDV n'a pu etre créer"
+                "message" => "RDV n'a pu etre cree"
             ];
         }
     }

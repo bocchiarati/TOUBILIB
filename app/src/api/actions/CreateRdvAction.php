@@ -20,7 +20,7 @@ class CreateRdvAction {
         } catch (\Throwable $e) {
             $response->getBody()->write(json_encode([
                 "success" => false,
-                "message" => "Erreur lors de la création d'un rendez-vous" . $e->getMessage()
+                "message" => "Erreur lors de la creation d'un rendez-vous" . $e->getMessage()
             ]));
         }
         return $response->withHeader("Content-Type", "application/json");

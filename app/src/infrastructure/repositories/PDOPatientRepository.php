@@ -20,7 +20,7 @@ class PDOPatientRepository implements PatientRepositoryInterface {
             $query = $this->patient_pdo->query("SELECT nom, prenom FROM patient WHERE id = '$id'");
             $res = $query->fetchAll(PDO::FETCH_ASSOC);
             if (sizeof($res) > 1) {
-                throw new Exception("Erreur : plusieurs patients ont été trouvés.");
+                throw new Exception("Erreur : plusieurs patients ont ete trouves.");
             } else {
                 if (sizeof($res) == 0) {
                     throw new Exception("Le patient n'existe pas.");
