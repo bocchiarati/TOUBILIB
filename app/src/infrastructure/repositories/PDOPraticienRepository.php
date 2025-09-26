@@ -58,18 +58,20 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             throw new Exception("Erreur lors de la reception des motifs de visite.");
         }
 
-        return $motifs_visite->fetchAll(PDO::FETCH_ASSOC);
+        $res = $motifs_visite->fetchAll(PDO::FETCH_ASSOC);
+        return array_column($res, "motif_visite");
     }
 
     private function getMoyenPaiement($id) : array {
         try {
-            $moyens_paiement = $this->prati_pdo->query("SELECT moyen_paiement.libelle FROM moyen_paiement
+            $moyens_paiement = $this->prati_pdo->query("SELECT moyen_paiement.libelle as moyen_paiement FROM moyen_paiement
                                            INNER JOIN praticien2moyen ON moyen_paiement.id = praticien2moyen.moyen_id
                                            WHERE praticien2moyen.praticien_id = '$id'");
         } catch (\Throwable $e) {
             throw new Exception("Erreur lors de la reception des moyens de paiement.");
         }
 
-        return $moyens_paiement->fetchAll(PDO::FETCH_ASSOC);
+        $res = $moyens_paiement->fetchAll(PDO::FETCH_ASSOC);
+        return array_column($res, "moyen_paiement");
     }
 }
