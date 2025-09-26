@@ -2,6 +2,7 @@
 
 namespace toubilib\api\middlewares;
 
+use DateTime;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -29,6 +30,14 @@ class CreerRendezVousValidationMiddleware {
             ->assert($data);
         } catch (NestedValidationException $e) {
             throw new HttpBadRequestException($request, "Invalid data: " . $e->getFullMessage(), $e);
+        }
+
+        //vérification format des datetime
+        foreach (['date_heure_debut', 'date_heure_fin'] as $datetime) {
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $data[$datetime]);
+            if (!$date || $date->format('Y-m-d H:i:s') !== $data[$datetime]) {
+                throw new HttpBadRequestException($request, "Le champ $datetime doit être au format Y-m-d H:i:s");
+            }
         }
 
         $rdvDTO = new InputRendezVousDTO($data);
