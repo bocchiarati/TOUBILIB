@@ -56,7 +56,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             if(!(in_array($dto->motif_visite,$prat[0]['motifs_visite']))) {
                 return [
                     "success" => false,
-                    "message" => "RDV n'a pu etre cree. Le motif de visite n'existe pas pour ce praticien."
+                    "message" => "RDV n'a pu etre cree.\nLe motif de visite n'existe pas pour ce praticien."
                 ];
             }
 
@@ -71,7 +71,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             if (!(($heureDebut >= 8) && ($heureFin < 19 || ($heureFin === 19 && $minuteFin === 0)))) {
                 return [
                     'success' => false,
-                    "message" => "RDV n'a pu etre cree. Les horaires doivent etre compris entre 8h et 19h."
+                    "message" => "RDV n'a pu etre cree.\nLes horaires doivent etre compris entre 8h et 19h."
                 ];
             }
 
@@ -79,7 +79,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             if (($heureDebut < $heureFin) || (($heureDebut === $heureFin) && ($minuteFin <= $minuteDebut))) {
                 return [
                     'success' => false,
-                    "message" => "RDV n'a pu etre cree. Les horaires de fin du rdv ne peuvent etre avant les horaires de debut."
+                    "message" => "RDV n'a pu etre cree.\nLes horaires de fin du rdv ne peuvent etre avant les horaires de debut."
                 ];
             }
 
@@ -90,7 +90,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             if (($nJourDebut > 5) || ($nJourFin > 5)) {
                 return [
                     'success' => false,
-                    "message" => "RDV n'a pu etre cree. Les horaires doivent etre compris entre lundi et vendredi."
+                    "message" => "RDV n'a pu etre cree.\nLes horaires doivent etre compris entre lundi et vendredi."
                 ];
             }
 
@@ -98,12 +98,20 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             if ($nJourFin !== $nJourDebut) {
                 return [
                     'success' => false,
-                    "message" => "RDV n'a pu etre cree. Le jour de debut et le jour de fin doivent etre les même."
+                    "message" => "RDV n'a pu etre cree.\nLe jour de debut et le jour de fin doivent etre les même."
                 ];
             }
 
             //vérification praticien disponible
-            //$this->rendezVousRepository->createRdv($dto);
+            $rdvs = $this->listerRDV($dto->praticien_id,$dto->date_heure_debut,$dto->date_heure_fin);
+            if ($rdvs != []) {
+                return [
+                    'success' => false,
+                    "message" => "RDV n'a pu etre cree.\nLe creneau est deja occupe."
+                ];
+            }
+
+            $this->rendezVousRepository->createRdv($dto);
             return [
                 'success' => true,
                 "message" => "RDV cree."
@@ -111,7 +119,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         } catch (\Throwable $th) {
             return [
                 "success" => false,
-                "message" => "RDV n'a pu etre cree. " . $th->getMessage()
+                "message" => "RDV n'a pu etre cree.\n" . $th->getMessage()
             ];
         }
     }
