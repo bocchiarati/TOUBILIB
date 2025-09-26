@@ -22,11 +22,19 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
     public function listerRDV(string $debut, string $fin, string $praticien_id): array {
-        return $this->rendezVousRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
+        try {
+            return $this->rendezVousRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
+        } catch (\Throwable $th) {
+            throw new \Exception("Erreur lors de l'obtention de la liste des RDV (Service)\n" . $th->getMessage());
+        }
     }
 
     public function getRDV($id_prat, $id_rdv): array {
-        return $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
+        try {
+            return $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
+        } catch (\Throwable $th) {
+            throw new \Exception("Erreur lors de l'obtention du RDV (Service)\n" . $th->getMessage());
+        }
     }
 
     public function creerRendezVous(InputRendezVousDTO $dto): array {
