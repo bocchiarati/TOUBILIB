@@ -7,6 +7,7 @@ use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\api\dtos\InputRendezVousDTO;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
+use function PHPUnit\Framework\containsEqual;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -46,8 +47,14 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function creerRendezVous(InputRendezVousDTO $dto): array {
         try {
-            $this->servicePraticien->getPraticien($dto->praticien_id);
+            $prat = $this->servicePraticien->getPraticien($dto->praticien_id);
             $this->servicePatient->getPatient($dto->patient_id);
+            if(!(in_array($dto->motif_visite,$prat[0]['motifs_visite']))) {
+                return [
+                    "success" => false,
+                    "message" => "RDV n'a pu etre cree. Le motif de visite n'existe pas pour ce praticien."
+                ];
+            }
             $this->rendezVousRepository->createRdv($dto);
             return [
                 'success' => true,
@@ -56,7 +63,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         } catch (\Throwable $th) {
             return [
                 "success" => false,
-                "message" => "RDV n'a pu etre cree"
+                "message" => $th->getMessage(),
             ];
         }
     }
