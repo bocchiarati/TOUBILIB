@@ -25,4 +25,16 @@ class RendezVous {
 
         throw new Exception("La propriété '$property' n'existe pas.");
     }
+
+    /**
+     * @throws Exception
+     */
+    public function annuler(){
+        $dateFin = \Datetime::createFromFormat('Y-m-d H:i:s', $this->date_heure_debut);
+        if($dateFin < new \DateTime()) {
+            throw new Exception("Impossible d'annuler un rendez-vous déjà passé");
+        }
+
+        $this->status = 2;
+    }
 }
