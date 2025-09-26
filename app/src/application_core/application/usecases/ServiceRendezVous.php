@@ -2,6 +2,7 @@
 
 namespace toubilib\core\application\usecases;
 
+use DateTime;
 use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
@@ -47,23 +48,70 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function creerRendezVous(InputRendezVousDTO $dto): array {
         try {
+            //vérification si le praticien existe
             $prat = $this->servicePraticien->getPraticien($dto->praticien_id);
+            //vérification si le patient existe
             $this->servicePatient->getPatient($dto->patient_id);
+            //vérification si le motif de visite existe
             if(!(in_array($dto->motif_visite,$prat[0]['motifs_visite']))) {
                 return [
                     "success" => false,
                     "message" => "RDV n'a pu etre cree. Le motif de visite n'existe pas pour ce praticien."
                 ];
             }
-            $this->rendezVousRepository->createRdv($dto);
+
+            //vérification si le créneau est disponible
+            $date_heure_debut = DateTime::createFromFormat('Y-m-d H:i:s', $dto->date_heure_debut);
+            $date_heure_fin = DateTime::createFromFormat('Y-m-d H:i:s', $dto->date_heure_fin);
+            $heureDebut = (int)$date_heure_debut->format('H');
+            $minuteDebut = (int)$date_heure_debut->format('i');
+            $heureFin = (int)$date_heure_fin->format('H');
+            $minuteFin = (int)$date_heure_fin->format('i');
+            //entre 8h et 19h
+            if (!(($heureDebut >= 8) && ($heureFin < 19 || ($heureFin === 19 && $minuteFin === 0)))) {
+                return [
+                    'success' => false,
+                    "message" => "RDV n'a pu etre cree. Les horaires doivent etre compris entre 8h et 19h."
+                ];
+            }
+
+            //horaire debut < horaire fin
+            if (($heureDebut < $heureFin) || (($heureDebut === $heureFin) && ($minuteFin <= $minuteDebut))) {
+                return [
+                    'success' => false,
+                    "message" => "RDV n'a pu etre cree. Les horaires de fin du rdv ne peuvent etre avant les horaires de debut."
+                ];
+            }
+
+
+            $nJourDebut = (int)$date_heure_debut->format('N');
+            $nJourFin = (int)$date_heure_fin->format('N');
+            //du lundi au venredi
+            if (($nJourDebut > 5) || ($nJourFin > 5)) {
+                return [
+                    'success' => false,
+                    "message" => "RDV n'a pu etre cree. Les horaires doivent etre compris entre lundi et vendredi."
+                ];
+            }
+
+            //horaire debut = horaire fin
+            if ($nJourFin !== $nJourDebut) {
+                return [
+                    'success' => false,
+                    "message" => "RDV n'a pu etre cree. Le jour de debut et le jour de fin doivent etre les même."
+                ];
+            }
+
+            //vérification praticien disponible
+            //$this->rendezVousRepository->createRdv($dto);
             return [
                 'success' => true,
-                "message" => "RDV cree"
+                "message" => "RDV cree."
             ];
         } catch (\Throwable $th) {
             return [
                 "success" => false,
-                "message" => $th->getMessage(),
+                "message" => "RDV n'a pu etre cree. " . $th->getMessage()
             ];
         }
     }
