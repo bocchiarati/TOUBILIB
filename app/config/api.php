@@ -26,5 +26,8 @@ return [
     CreateRdvAction::class=> function (ContainerInterface $c) {
         return new CreateRdvAction($c->get(ServiceRendezVousInterface::class));
     },
+    AnnulerRdvAction::class=> function (ContainerInterface $c) {
+        return new AnnulerRdvAction($c->get(ServiceRendezVousInterface::class));
+    },
 ];
 

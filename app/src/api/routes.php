@@ -17,5 +17,6 @@ return function( App $app): App {
     $app->get("/praticiens/{id}/rdv/{rdv_id}", PraticiensRdvDetailsAction::class);
     $app->get("/praticiens/{id_prat}/rdv/create/{id_pat}/{date_heure_debut}/{date_heure_fin}/{duree}/{motif}", CreateRdvAction::class)
         ->add(new \toubilib\api\middlewares\CreerRendezVousValidationMiddleware());
+    $app->get("/rdv/{id_rdv}/annuler", AnnulerRdvAction::class);
     return $app;
 };
