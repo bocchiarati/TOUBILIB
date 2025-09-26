@@ -20,7 +20,7 @@ class PraticiensRdvAction {
         if(is_null($id)) {
             $response->getBody()->write(json_encode(["Praticien introuvable"]));
         }
-        $response->getBody()->write(json_encode($this->serviceRdv->listerRDV($date_debut, $date_fin, $id)));
+        $response->getBody()->write(json_encode($this->serviceRdv->listerRDV($id, $date_debut, $date_fin)));
         return $response->withHeader("Content-Type", "application/json");
     }
 }

@@ -21,7 +21,14 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $this->servicePatient = $servicePatient;
     }
 
-    public function listerRDV(string $debut, string $fin, string $praticien_id): array {
+    public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array {
+        if(is_null($debut)) {
+            $debut = (new \DateTime())->setTime(8, 0)->format('Y-m-d H:i:s');
+        }
+        if(is_null($fin)) {
+            $fin = (new \DateTime())->setTime(19,0)->format('Y-m-d H:i:s');
+        }
+
         try {
             return $this->rendezVousRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
         } catch (\Throwable $th) {
@@ -52,5 +59,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 "message" => "RDV n'a pu etre créer"
             ];
         }
+    }
+
+    public function annulerRendezVous($id_rdv) {
+
     }
 }
