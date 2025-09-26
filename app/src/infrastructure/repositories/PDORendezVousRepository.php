@@ -34,7 +34,7 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         }
 
         try {
-            $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE date_heure_debut BETWEEN '$debut' AND '$fin' AND praticien_id = '$praticien_id'");
+            $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE date_heure_debut < '$fin' AND date_heure_fin > '$debut' AND praticien_id = '$praticien_id'");
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             throw new Exception("Erreur lors de la reception des RDV.");
