@@ -32,7 +32,7 @@ class RendezVous {
     public function annuler(){
         $dateFin = \Datetime::createFromFormat('Y-m-d H:i:s', $this->date_heure_debut);
         if($dateFin < new \DateTime()) {
-            throw new Exception("Impossible d'annuler un rendez-vous déjà passé");
+            throw new Exception("Impossible d'annuler un rendez-vous deje passe.");
         }
 
         $this->status = 2;
