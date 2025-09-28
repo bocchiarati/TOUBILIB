@@ -3,10 +3,12 @@
 namespace toubilib\core\application\usecases;
 
 use DateTime;
+use toubilib\api\dtos\RendezVousDTO;
 use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\api\dtos\InputRendezVousDTO;
+use toubilib\core\domain\entities\rdv\RendezVous;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 use function PHPUnit\Framework\containsEqual;
 
@@ -38,9 +40,20 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
     }
 
-    public function getRDV($id_prat, $id_rdv): array {
+    public function getRDV($id_rdv): RendezVousDTO {
         try {
-            return $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
+            $rdv = $this->rendezVousRepository->getRDV($id_rdv);
+            return new RendezVousDTO(
+                id: $rdv->id,
+                praticien_id: $rdv->praticien_id,
+                patient_id: $rdv->patient_id,
+                date_heure_debut: $rdv->date_heure_debut,
+                status: $rdv->status,
+                duree: $rdv->duree,
+                date_heure_fin: $rdv->date_heure_fin,
+                date_creation: $rdv->date_creation,
+                motif_visite: $rdv->motif_visite
+            );
         } catch (\Throwable $th) {
             throw new \Exception("Erreur lors de l'obtention du RDV (Service)\n" . $th->getMessage());
         }
@@ -124,7 +137,19 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
     }
 
-    public function annulerRendezVous($id_rdv) {
-
+    public function annulerRendezVous($id_rdv): array {
+        try {
+            $rdv = $this->rendezVousRepository->getRDV($id_rdv);
+            $rdv->annuler();
+            return [
+                "success" => true,
+                "message" => "Le rendez-vous a bien ete annule."
+            ];
+        } catch (\Throwable $th) {
+            return [
+                "success" => false,
+                "message" => "Erreur lors de l'annulation du rendez-vous.\n" . $th->getMessage()
+            ];
+        }
     }
 }

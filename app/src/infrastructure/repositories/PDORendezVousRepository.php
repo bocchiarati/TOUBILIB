@@ -5,9 +5,9 @@ namespace toubilib\infra\repositories;
 
 use DateTime;
 use Exception;
-use Faker\Core\Uuid;
 use PDO;
-use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
+use toubilib\api\dtos\RendezVousDTO;
+use toubilib\core\domain\entities\rdv\RendezVous;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class PDORendezVousRepository implements RendezVousRepositoryInterface {
@@ -41,14 +41,25 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         }
     }
 
-    public function getRDV(string $id_prat, string $id_rdv): array {
+    public function getRDV(string $id_rdv): RendezVous {
         try {
-            $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
+            $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE id = '$id_rdv'");
             $res = $query->fetchAll(PDO::FETCH_ASSOC);
             if (sizeof($res) > 1) {
                 throw new Exception("Erreur : plusieurs rendez vous ont ete trouves.");
             } else {
-                return $res[0];
+                $rdv = $res[0];
+                return new RendezVous(
+                    id: $rdv['id'],
+                    praticien_id: $rdv['praticien_id'],
+                    patient_id: $rdv['patient_id'],
+                    date_heure_debut: $rdv['date_heure_debut'],
+                    status: (int) $rdv['status'],
+                    duree: (int) $rdv['duree'],
+                    date_heure_fin: $rdv['date_heure_fin'],
+                    date_creation: $rdv['date_creation'],
+                    motif_visite: $rdv['motif_visite']
+                );
             }
         } catch (\Throwable $e) {
             throw new Exception("Erreur lors de la reception des rendez vous.");
@@ -81,5 +92,14 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
             throw new Exception("Erreur lors de la creation du rendez vous.");
         }
         
+    }
+
+    public function annulerRdv($id_rdv) {
+        try {
+            $query = $this->rdv_pdo->query("UPDATE rdv SET status = 1 WHERE id = '$id_rdv'");
+        } catch (Exception $e) {
+            throw new Exception("Erreur lors de l'annulation du rendez-vous.");
+        }
+
     }
 }
