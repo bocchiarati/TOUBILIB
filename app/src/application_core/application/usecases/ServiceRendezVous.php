@@ -26,10 +26,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
     public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array {
-        if(is_null($debut)) {
+        if(empty($debut) || empty($fin)) {
             $debut = (new \DateTime())->setTime(8, 0)->format('Y-m-d H:i:s');
-        }
-        if(is_null($fin)) {
             $fin = (new \DateTime())->setTime(19,0)->format('Y-m-d H:i:s');
         }
 
@@ -40,9 +38,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
     }
 
-    public function getRDV($id_rdv): RendezVousDTO {
+    public function getRDV(string $id_prat, string $id_rdv): RendezVousDTO {
         try {
-            $rdv = $this->rendezVousRepository->getRDV($id_rdv);
+            $rdv = $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
             return new RendezVousDTO(
                 id: $rdv->id,
                 praticien_id: $rdv->praticien_id,
