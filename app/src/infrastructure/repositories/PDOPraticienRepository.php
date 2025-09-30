@@ -4,6 +4,8 @@ namespace toubilib\infra\repositories;
 
 use Exception;
 use PDO;
+use PhpParser\Node\Expr\List_;
+use toubilib\core\domain\entities\praticien\Praticien;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
 class PDOPraticienRepository implements PraticienRepositoryInterface {
@@ -19,13 +21,26 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
         try {
             $query = $this->prati_pdo->query("SELECT praticien.id, nom, prenom, ville, email, specialite.libelle as specialite FROM praticien
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id");
-            return $query->fetchAll(PDO::FETCH_ASSOC);
+            $array = $query->fetchAll(PDO::FETCH_ASSOC);
+            $res = [];
+            foreach ($array as $praticien) {
+                $res[] = new Praticien(
+                    id: $praticien['id'],
+                    nom: $praticien['nom'],
+                    prenom: $praticien['prenom'],
+                    ville: $praticien['ville'],
+                    email: $praticien['email'],
+                    telephone: $praticien['telephone'],
+                    specialite: $praticien['specialite']
+                );
+            }
+            return $res;
         } catch (\Throwable $e) {
             throw new Exception("Erreur lors de la reception des praticiens.");
         }
     }
 
-    public function getPraticien($id): array {
+    public function getPraticien($id): Praticien {
         try {
             $query = $this->prati_pdo->query("SELECT praticien.nom, praticien.prenom, specialite.libelle as specialite, praticien.email, praticien.telephone FROM praticien
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id
@@ -46,7 +61,16 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
         } catch (\Exception $e) {
             throw new Exception("Erreur lors de la reception des motifs de visite.");
         }
-        return $array;
+
+        return new Praticien(
+            id: $array[0]['id'],
+            nom: $array[0]['nom'],
+            prenom: $array[0]['prenom'],
+            ville: $array[0]['ville'],
+            email: $array[0]['email'],
+            telephone: $array[0]['telephone'],
+            specialite: $array[0]['specialite']
+        );
     }
 
     private function getMotifsVisite($id) : array {
