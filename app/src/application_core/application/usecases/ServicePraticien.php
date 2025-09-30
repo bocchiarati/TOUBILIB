@@ -15,10 +15,18 @@ class ServicePraticien implements ServicePraticienInterface {
     }
 
     public function listerPraticiens(): array {
-    	return $this->praticienRepository->getPraticiens();
+        try {
+            return $this->praticienRepository->getPraticiens();
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de l'obtention de la liste des praticiens (Service). \n Message erreur PDO : " . $e->getMessage());
+        }
     }
 
     public function getPraticien(string $id): array {
-        return $this->praticienRepository->getPraticien($id);
+        try {
+            return $this->praticienRepository->getPraticien($id);
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de l'obtention du praticien " . $id . ". \n Message erreur PDO : " . $e->getMessage());
+        }
     }
 }

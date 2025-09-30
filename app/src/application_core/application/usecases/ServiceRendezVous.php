@@ -144,10 +144,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 "message" => "Le rendez-vous a bien ete annule."
             ];
         } catch (\Throwable $th) {
-            return [
-                "success" => false,
-                "message" => "Erreur lors de l'annulation du rendez-vous.\n" . $th->getMessage()
-            ];
+            throw new \Exception("Erreur lors de l'annulation du rendez-vous. " . $th->getMessage());
         }
     }
 }
