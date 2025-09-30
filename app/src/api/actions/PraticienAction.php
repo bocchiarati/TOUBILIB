@@ -17,7 +17,7 @@ class PraticienAction {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $id = RouteContext::fromRequest($request)
             ->getRoute()
-            ->getArguments()['id'];
+            ->getArguments()['id_prat'];
         $response->getBody()->write(json_encode($this->servicePraticien->getPraticien($id)));
         return $response->withHeader("Content-Type", "application/json");
     }

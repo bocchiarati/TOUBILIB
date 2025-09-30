@@ -13,7 +13,7 @@ class PraticiensRdvAction {
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-        $id = $args['id'] ?? null;
+        $id = $args['id_prat'] ?? null;
         $date_debut = $args['date_debut'] ?? null;
         $date_fin = $args['date_fin'] ?? null;
 
