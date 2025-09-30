@@ -12,8 +12,26 @@ class Praticien {
     private string $ville;
     private string $email;
     private string $telephone;
-
     private string $specialite;
+
+    public function __construct(
+        string $id,
+        string $nom,
+        string $prenom,
+        string $ville,
+        string $email,
+        string $telephone,
+        string $specialite
+    ) {
+        $this->id = $id;
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->ville = $ville;
+        $this->email = $email;
+        $this->telephone = $telephone;
+        $this->specialite = $specialite;
+    }
+
 
     /**
      * @throws Exception
