@@ -8,7 +8,7 @@ use toubilib\api\dtos\RendezVousDTO;
 
 interface ServiceRendezVousInterface {
     public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array;
-    public function getRDV($id_rdv): RendezVousDTO;
+    public function getRDV(string $id_prat,string $id_rdv): RendezVousDTO;
     public function creerRendezVous(InputRendezVousDTO $dto): array;
     public function annulerRendezVous($id_prat, $id_rdv): array;
 }
