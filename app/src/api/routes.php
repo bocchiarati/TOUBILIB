@@ -8,6 +8,7 @@ use toubilib\api\actions\PraticiensRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
 use toubilib\api\actions\RdvDetailsAction;
+use toubilib\api\middlewares\CreerRendezVousValidationMiddleware;
 
 
 return function( App $app): App {
@@ -19,7 +20,7 @@ return function( App $app): App {
 
 //    POST
     $app->post("/praticiens/{id_prat}/rdvs", CreateRdvAction::class)
-        ->add(new \toubilib\api\middlewares\CreerRendezVousValidationMiddleware());
+        ->add(new CreerRendezVousValidationMiddleware());
 
 //    DELETE
     $app->delete("/praticiens/{id_prat}/rdvs/{id_rdv}", AnnulerRdvAction::class);
