@@ -43,7 +43,7 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
 
     public function getRDV(string $id_prat, string $id_rdv): RendezVous {
         try {
-            $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE id = '$id_rdv'");
+            $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
             $res = $query->fetchAll(PDO::FETCH_ASSOC);
             if (sizeof($res) > 1) {
                 throw new Exception("Erreur : plusieurs rendez vous ont ete trouves.");
