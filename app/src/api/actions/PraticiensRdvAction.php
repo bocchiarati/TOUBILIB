@@ -14,10 +14,12 @@ class PraticiensRdvAction {
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $id = $args['id_prat'] ?? null;
-        $date_debut = $args['date_debut'] ?? null;
-        $date_fin = $args['date_fin'] ?? null;
 
-        if(is_null($id)) {
+        $queryParams = $request->getQueryParams();
+        $date_debut = $queryParams['date_debut'] ?? null;
+        $date_fin = $queryParams['date_fin'] ?? null;
+
+        if(empty($id)) {
             $response->getBody()->write(json_encode(["Praticien introuvable"]));
         }
         $response->getBody()->write(json_encode($this->serviceRdv->listerRDV($id, $date_debut, $date_fin)));
