@@ -19,7 +19,7 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
 
     public function getPraticiens() : array {
         try {
-            $query = $this->prati_pdo->query("SELECT praticien.id, nom, prenom, ville, email, specialite.libelle as specialite FROM praticien
+            $query = $this->prati_pdo->query("SELECT praticien.id, nom, prenom, ville, email, specialite.libelle, telephone, email as specialite FROM praticien
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id");
             $array = $query->fetchAll(PDO::FETCH_ASSOC);
             $res = [];
@@ -42,7 +42,7 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
 
     public function getPraticien($id): Praticien {
         try {
-            $query = $this->prati_pdo->query("SELECT praticien.nom, praticien.prenom, specialite.libelle as specialite, praticien.email, praticien.telephone FROM praticien
+            $query = $this->prati_pdo->query("SELECT praticien.id, praticien.nom, praticien.ville, praticien.email, praticien.prenom, specialite.libelle as specialite, praticien.email, praticien.telephone FROM praticien
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id
                                           WHERE praticien.id = '$id'");
         } catch (\Throwable $e) {
