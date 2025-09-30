@@ -17,7 +17,10 @@ class AnnulerRdvAction {
         $id_rdv = RouteContext::fromRequest($request)
             ->getRoute()
             ->getArguments()['id_rdv'];
-        $response->getBody()->write(json_encode($this->serviceRdv->annulerRendezVous($id_rdv)));
+        $id_prat = RouteContext::fromRequest($request)
+            ->getRoute()
+            ->getArguments()['id_prat'];
+        $response->getBody()->write(json_encode($this->serviceRdv->annulerRendezVous($id_prat, $id_rdv)));
         return $response->withHeader("Content-Type", "application/json");
     }
 }

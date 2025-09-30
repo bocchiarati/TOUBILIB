@@ -41,7 +41,7 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         }
     }
 
-    public function getRDV(string $id_rdv): RendezVous {
+    public function getRDV(string $id_prat, string $id_rdv): RendezVous {
         try {
             $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE id = '$id_rdv'");
             $res = $query->fetchAll(PDO::FETCH_ASSOC);

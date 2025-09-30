@@ -137,9 +137,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
     }
 
-    public function annulerRendezVous($id_rdv): array {
+    public function annulerRendezVous($id_prat, $id_rdv): array {
         try {
-            $rdv = $this->rendezVousRepository->getRDV($id_rdv);
+            $rdv = $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
             $rdv->annuler();
             return [
                 "success" => true,
