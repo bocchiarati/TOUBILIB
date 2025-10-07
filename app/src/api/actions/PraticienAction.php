@@ -27,8 +27,8 @@ class PraticienAction {
 
             $response->getBody()->write(json_encode($this->servicePraticien->getPraticien($id_prat)));
             return $response->withHeader("Content-Type", "application/json");
-        } catch (\Exception) {
-            throw new \Exception("Erreur lors de l'obtention des détail sur le praticien.");
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 }
