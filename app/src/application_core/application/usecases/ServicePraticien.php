@@ -15,11 +15,37 @@ class ServicePraticien implements ServicePraticienInterface {
         $this->praticienRepository = $praticienRepository;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function listerPraticiens(): array {
-        $praticiens = $this->praticienRepository->getPraticiens();
-        $res = [];
-        foreach ($praticiens as $praticien) {
-            $res[] = new PraticienDTO(
+        try {
+            $praticiens = $this->praticienRepository->getPraticiens();
+            $res = [];
+            foreach ($praticiens as $praticien) {
+                $res[] = new PraticienDTO(
+                    id: $praticien->id,
+                    nom: $praticien->nom,
+                    prenom: $praticien->prenom,
+                    ville: $praticien->ville,
+                    email: $praticien->email,
+                    telephone: $praticien->telephone,
+                    specialite: $praticien->specialite
+                );
+            }
+            return $res;
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de l'obtention du praticien " . $id . ". \n Message erreur PDO : " . $e->getMessage());
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getPraticien(string $id): PraticienDTO {
+        try {
+            $praticien = $this->praticienRepository->getPraticien($id);
+            return new PraticienDTO(
                 id: $praticien->id,
                 nom: $praticien->nom,
                 prenom: $praticien->prenom,
@@ -28,20 +54,8 @@ class ServicePraticien implements ServicePraticienInterface {
                 telephone: $praticien->telephone,
                 specialite: $praticien->specialite
             );
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de l'obtention du praticien " . $id . ". \n Message erreur PDO : " . $e->getMessage());
         }
-        return $res;
-    }
-
-    public function getPraticien(string $id): PraticienDTO {
-        $praticien = $this->praticienRepository->getPraticien($id);
-        return new PraticienDTO(
-            id: $praticien->id,
-            nom: $praticien->nom,
-            prenom: $praticien->prenom,
-            ville: $praticien->ville,
-            email: $praticien->email,
-            telephone: $praticien->telephone,
-            specialite: $praticien->specialite
-        );
     }
 }

@@ -14,8 +14,15 @@ class PraticiensAction {
         $this->servicePraticien = $servicePraticien;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-        $response->getBody()->write(json_encode($this->servicePraticien->listerPraticiens()));
-        return $response->withHeader("Content-Type", "application/json");
+        try {
+            $response->getBody()->write(json_encode($this->servicePraticien->listerPraticiens()));
+            return $response->withHeader("Content-Type", "application/json");
+        } catch (\Exception) {
+            throw new \Exception("Erreur lors de la récupération de la liste des praticiens.");
+        }
     }
 }

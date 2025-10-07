@@ -14,11 +14,21 @@ class PraticienAction {
         $this->servicePraticien = $servicePraticien;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-        $id = RouteContext::fromRequest($request)
-            ->getRoute()
-            ->getArguments()['id_prat'];
-        $response->getBody()->write(json_encode($this->servicePraticien->getPraticien($id)));
-        return $response->withHeader("Content-Type", "application/json");
+        $id_prat = $args['id_prat'] ?? null;
+        if(empty($id_prat)) {
+            throw new \Exception("Saisissez un id de praticien");
+        }
+
+        try {
+
+            $response->getBody()->write(json_encode($this->servicePraticien->getPraticien($id_prat)));
+            return $response->withHeader("Content-Type", "application/json");
+        } catch (\Exception) {
+            throw new \Exception("Erreur lors de l'obtention des détail sur le praticien.");
+        }
     }
 }

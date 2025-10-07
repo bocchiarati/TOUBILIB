@@ -25,6 +25,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $this->servicePatient = $servicePatient;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array {
         if(empty($debut) || empty($fin)) {
             $debut = (new \DateTime())->setTime(8, 0)->format('Y-m-d H:i:s');
@@ -38,6 +41,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getRDV(string $id_prat, string $id_rdv): RendezVousDTO {
         try {
             $rdv = $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
@@ -128,13 +134,13 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 "message" => "RDV cree."
             ];
         } catch (\Throwable $th) {
-            return [
-                "success" => false,
-                "message" => "RDV n'a pu etre cree.\n" . $th->getMessage()
-            ];
+            throw new \Exception("Erreur lors de l'obtention du service");
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function annulerRendezVous($id_prat, $id_rdv): array {
         try {
             $rdv = $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
@@ -144,10 +150,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 "message" => "Le rendez-vous a bien ete annule."
             ];
         } catch (\Throwable $th) {
-            return [
-                "success" => false,
-                "message" => "Erreur lors de l'annulation du rendez-vous.\n" . $th->getMessage()
-            ];
+            throw new \Exception("Erreur lors de l'annulation du rendez-vous. " . $th->getMessage());
         }
     }
 }

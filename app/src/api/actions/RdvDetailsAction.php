@@ -4,7 +4,6 @@ namespace toubilib\api\actions;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Routing\RouteContext;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 
 class RdvDetailsAction {
@@ -14,11 +13,26 @@ class RdvDetailsAction {
         $this->serviceRdv = $serviceRdv;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-        $rdv_id = RouteContext::fromRequest($request)
-            ->getRoute()
-            ->getArguments()['rdv_id'];
-        $response->getBody()->write(json_encode(($this->serviceRdv->getRDV($rdv_id))));
-        return $response->withHeader("Content-Type", "application/json");
+        $id_prat = $args['id_prat'] ?? null;
+        $id_rdv = $args['rdv_id'] ?? null;
+
+        if(empty($id_prat)) {
+            throw new \Exception("Saisissez un id de Praticien");
+        }
+
+        if(empty($id_rdv)) {
+            throw new \Exception("Saisissez un id de Rendez vous");
+        }
+
+        try {
+            $response->getBody()->write(json_encode(($this->serviceRdv->getRDV($id_prat, $id_rdv))));
+            return $response->withHeader("Content-Type", "application/json");
+        } catch (\Exception) {
+            throw new \Exception("Erreur lors de l'obtention du RDV");
+        }
     }
 }
