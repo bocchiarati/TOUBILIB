@@ -4,6 +4,8 @@ namespace toubilib\infra\repositories;
 
 use Exception;
 use PDO;
+use toubilib\api\dtos\PatientDTO;
+use toubilib\core\domain\entities\patient\Patient;
 use toubilib\infra\repositories\interface\PatientRepositoryInterface;
 
 class PDOPatientRepository implements PatientRepositoryInterface {
@@ -15,9 +17,9 @@ class PDOPatientRepository implements PatientRepositoryInterface {
         $this->patient_pdo = $patient_pdo;
     }
 
-    public function getPatient(string $id): array {
+    public function getPatient(string $id): Patient {
         try {
-            $query = $this->patient_pdo->query("SELECT nom, prenom FROM patient WHERE id = '$id'");
+            $query = $this->patient_pdo->query("SELECT id, nom, prenom, date_naissance, adresse, code_postal, ville, email, telephone FROM patient WHERE id = '$id'");
             $res = $query->fetchAll(PDO::FETCH_ASSOC);
             if (sizeof($res) > 1) {
                 throw new Exception("Erreur : plusieurs patients ont ete trouves.");
@@ -25,7 +27,18 @@ class PDOPatientRepository implements PatientRepositoryInterface {
                 if (sizeof($res) == 0) {
                     throw new Exception("Le patient n'existe pas.");
                 } else {
-                    return $res[0];
+                    $res = $res[0];
+                    return new Patient(
+                        id: $res['id'],
+                        nom: $res['nom'],
+                        prenom: $res['prenom'],
+                        date_naissance: $res['date_naissance'],
+                        adresse: $res['adresse'],
+                        code_postal: $res['code_postal'],
+                        ville: $res['ville'],
+                        email: $res['email'],
+                        telephone: $res['telephone']
+                    );
                 }
             }
         } catch (\Throwable $e) {
