@@ -13,8 +13,15 @@ class ServicePatient implements ServicePatientInterface {
         $this->patientRepository = $patientRepository;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getPatient(string $id): PatientDTO {
-        $pat = $this->patientRepository->getPatient($id);
+        try {
+            $pat = $this->patientRepository->getPatient($id);
+        } catch (\Throwable $th) {
+            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception du patient.");
+        }
         return new PatientDTO(
             id: $pat->id,
             nom: $pat->nom,

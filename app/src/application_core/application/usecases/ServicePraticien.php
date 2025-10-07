@@ -1,11 +1,9 @@
 <?php
 
 namespace toubilib\core\application\usecases;
-use Respect\Validation\Rules\Date;
 use toubilib\api\dtos\PraticienDTO;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
-use toubilib\infra\repositories\PDOPraticienRepository;
 
 class ServicePraticien implements ServicePraticienInterface {
     private PraticienRepositoryInterface $praticienRepository;
@@ -34,8 +32,8 @@ class ServicePraticien implements ServicePraticienInterface {
                 );
             }
             return $res;
-        } catch (\Exception $e) {
-            throw new \Exception("Erreur lors de l'obtention du praticien " . $id . ". \n Message erreur PDO : " . $e->getMessage());
+        } catch (\Throwable $th) {
+            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception des praticiens.");
         }
     }
 
@@ -54,8 +52,8 @@ class ServicePraticien implements ServicePraticienInterface {
                 telephone: $praticien->telephone,
                 specialite: $praticien->specialite
             );
-        } catch (\Exception $e) {
-            throw new \Exception("Erreur lors de l'obtention du praticien " . $id . ". \n Message erreur PDO : " . $e->getMessage());
+        } catch (\Throwable $th) {
+            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception du praticien.");
         }
     }
 }

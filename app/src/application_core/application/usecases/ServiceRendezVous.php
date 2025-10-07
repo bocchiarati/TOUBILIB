@@ -3,14 +3,15 @@
 namespace toubilib\core\application\usecases;
 
 use DateTime;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpInternalServerErrorException;
 use toubilib\api\dtos\RendezVousDTO;
 use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\api\dtos\InputRendezVousDTO;
-use toubilib\core\domain\entities\rdv\RendezVous;
+use toubilib\core\exceptions\CreneauException;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
-use function PHPUnit\Framework\containsEqual;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -37,9 +38,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         try {
-            return $this->rendezVousRepository->getCreneauxOccupees($debut, $fin, $praticien_id);
+            return $this->rendezVousRepository->getCreneauxOccupes($debut, $fin, $praticien_id);
         } catch (\Throwable $th) {
-            throw new \Exception("Erreur lors de l'obtention de la liste des RDV (Service)\n" . $th->getMessage());
+            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception des creneaux.");
         }
     }
 
@@ -61,10 +62,13 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 motif_visite: $rdv->motif_visite
             );
         } catch (\Throwable $th) {
-            throw new \Exception("Erreur lors de l'obtention du RDV (Service)\n" . $th->getMessage());
+            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception du rendez-vous.");
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function creerRendezVous(InputRendezVousDTO $dto): array {
         try {
             //vérification si le praticien existe
@@ -152,7 +156,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 "message" => "Le rendez-vous a bien ete annule."
             ];
         } catch (\Throwable $th) {
-            throw new \Exception("Erreur lors de l'annulation du rendez-vous. " . $th->getMessage());
+            throw new \Exception("Erreur ".$th->getCode().": probleme lors de l'annulation du rendez-vous.");
         }
     }
 }
