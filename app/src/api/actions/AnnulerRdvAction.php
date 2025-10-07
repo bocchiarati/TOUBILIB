@@ -4,7 +4,6 @@ namespace toubilib\api\actions;
 use _PHPStan_2d0955352\Nette\Neon\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Routing\RouteContext;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 
 class AnnulerRdvAction {
