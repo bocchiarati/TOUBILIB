@@ -29,7 +29,7 @@ class PraticienRdvAction {
             $response->getBody()->write(json_encode($this->serviceRdv->listerRDV($id_prat, $date_debut, $date_fin)));
             return $response->withHeader("Content-Type", "application/json");
         } catch (\Exception $e) {
-            throw new \Exception("Erreur lors de la récupération des Rendez Vous du praticiens");
+            throw new \Exception($e->getMessage());
         }
     }
 }
