@@ -36,14 +36,30 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         }
 
         try {
-            $query = $this->rdv_pdo->query("SELECT date_heure_debut, duree, date_heure_fin, motif_visite FROM rdv WHERE date_heure_debut < '$fin' AND date_heure_fin > '$debut' AND praticien_id = '$praticien_id'");
-            return $query->fetchAll(PDO::FETCH_ASSOC);
+            $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE date_heure_debut < '$fin' AND date_heure_fin > '$debut' AND praticien_id = '$praticien_id'");
+            $array = $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (HttpInternalServerErrorException) {
             //500
             throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
         } catch(\Throwable) {
             throw new Exception("Erreur lors de la reception des rendez-vous.");
         }
+        $res = [];
+        foreach ($array as $rdv) {
+            $res[] = new RendezVous(
+                id: $rdv['id'],
+                praticien_id: $rdv['praticien_id'],
+                patient_id: $rdv['patient_id'],
+                status: (int)$rdv['status'],
+                duree: (int)$rdv['duree'],
+                date_heure_fin: $rdv['date_heure_fin'],
+                motif_visite: $rdv['motif_visite'],
+                date_heure_debut: $rdv['date_heure_debut'],
+                patient_email: $rdv['patient_email'],
+                date_creation: $rdv['date_creation']
+            );
+        }
+        return $res;
     }
 
     public function getRDV(string $id_prat, string $id_rdv): RendezVous {
@@ -63,12 +79,13 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
                 id: $rdv['id'],
                 praticien_id: $rdv['praticien_id'],
                 patient_id: $rdv['patient_id'],
-                date_heure_debut: $rdv['date_heure_debut'],
                 status: (int) $rdv['status'],
                 duree: (int) $rdv['duree'],
                 date_heure_fin: $rdv['date_heure_fin'],
-                date_creation: $rdv['date_creation'],
-                motif_visite: $rdv['motif_visite']
+                motif_visite: $rdv['motif_visite'],
+                date_heure_debut: $rdv['date_heure_debut'],
+                patient_email: $rdv['patient_email'],
+                date_creation: $rdv['date_creation']
             );
         }
     }
