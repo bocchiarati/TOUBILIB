@@ -8,11 +8,11 @@ class RendezVous {
     private string $id;
     private string $praticien_id;
     private string $patient_id;
-    private string $patient_email;
+    private ?string $patient_email;
     private string $date_heure_debut;
-    private string $date_heure_fin;
+    private ?string $date_heure_fin;
     private string $motif_visite;
-    private string $date_creation;
+    private ?string $date_creation;
     private int $duree;
     private int $status;
 
@@ -20,15 +20,17 @@ class RendezVous {
         string $id,
         string $praticien_id,
         string $patient_id,
-        string $date_heure_debut,
         int $status,
         int $duree,
         string $date_heure_fin,
-        string $date_creation,
-        string $motif_visite
+        string $motif_visite,
+        ?string $date_heure_debut = null,
+        ?string $patient_email = null,
+        ?string $date_creation = null
     ){
         $this->id = $id;
         $this->praticien_id = $praticien_id;
+        $this->patient_email = $patient_email;
         $this->patient_id = $patient_id;
         $this->date_heure_debut = $date_heure_debut;
         $this->status = $status;
