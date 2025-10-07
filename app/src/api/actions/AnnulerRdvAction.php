@@ -14,6 +14,9 @@ class AnnulerRdvAction {
         $this->serviceRdv = $serviceRdv;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $id_prat = $args['id_prat'] ?? null;
         $id_rdv = $args['id_rdv'] ?? null;

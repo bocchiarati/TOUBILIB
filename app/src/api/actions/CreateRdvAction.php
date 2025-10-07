@@ -14,6 +14,9 @@ class CreateRdvAction {
         $this->serviceRdv = $serviceRdv;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $rdv_dto = $request->getAttribute('rdv_dto') ?? null;
 

@@ -15,6 +15,9 @@ class ServicePraticien implements ServicePraticienInterface {
         $this->praticienRepository = $praticienRepository;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function listerPraticiens(): array {
         try {
             $praticiens = $this->praticienRepository->getPraticiens();
@@ -36,6 +39,9 @@ class ServicePraticien implements ServicePraticienInterface {
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getPraticien(string $id): PraticienDTO {
         try {
             $praticien = $this->praticienRepository->getPraticien($id);

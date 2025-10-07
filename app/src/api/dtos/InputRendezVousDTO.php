@@ -22,6 +22,9 @@ class InputRendezVousDTO {
         $this->date_heure_fin = $data['date_heure_fin'];
     }
 
+    /**
+     * @throws Exception
+     */
     public function __get(string $property) {
         if (property_exists($this, $property)) {
             return $this->$property;

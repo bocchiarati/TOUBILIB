@@ -14,6 +14,9 @@ class PraticienAction {
         $this->servicePraticien = $servicePraticien;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $id_prat = $args['id_prat'] ?? null;
         if(empty($id_prat)) {

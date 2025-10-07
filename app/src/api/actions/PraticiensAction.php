@@ -14,6 +14,9 @@ class PraticiensAction {
         $this->servicePraticien = $servicePraticien;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         try {
             $response->getBody()->write(json_encode($this->servicePraticien->listerPraticiens()));
