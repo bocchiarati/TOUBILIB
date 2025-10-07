@@ -8,23 +8,23 @@ class Patient {
     private string $id;
     private string $nom;
     private string $prenom;
-    private string $date_naissance;
-    private string $adresse;
-    private string $code_postal;
-    private string $ville;
-    private string $email;
+    private ?string $date_naissance;
+    private ?string $adresse;
+    private ?string $code_postal;
+    private ?string $ville;
+    private ?string $email;
     private string $telephone;
 
     public function __construct(
         string $id,
         string $nom,
         string $prenom,
-        string $date_naissance,
-        string $adresse,
-        string $code_postal,
-        string $ville,
-        string $email,
-        string $telephone
+        string $telephone,
+        ?string $date_naissance = null,
+        ?string $adresse = null,
+        ?string $code_postal = null,
+        ?string $ville = null,
+        ?string $email = null
     ) {
         $this->id = $id;
         $this->nom = $nom;
