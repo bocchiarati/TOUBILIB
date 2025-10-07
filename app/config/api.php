@@ -3,7 +3,7 @@
 use Psr\Container\ContainerInterface;
 use toubilib\api\actions\AnnulerRdvAction;
 use toubilib\api\actions\CreateRdvAction;
-use toubilib\api\actions\PraticiensRdvAction;
+use toubilib\api\actions\PraticienRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
 use toubilib\api\actions\RdvDetailsAction;
@@ -18,8 +18,8 @@ return [
     PraticienAction::class=> function (ContainerInterface $c) {
         return new PraticienAction($c->get(ServicePraticienInterface::class));
     },
-    PraticiensRdvAction::class=> function (ContainerInterface $c) {
-        return new PraticiensRdvAction($c->get(ServiceRendezVousInterface::class));
+    PraticienRdvAction::class=> function (ContainerInterface $c) {
+        return new PraticienRdvAction($c->get(ServiceRendezVousInterface::class));
     },
     RdvDetailsAction::class=> function (ContainerInterface $c) {
         return new RdvDetailsAction($c->get(ServiceRendezVousInterface::class));
