@@ -13,6 +13,8 @@ class PraticienDTO {
         public readonly string $ville,
         public readonly string $email,
         public readonly string $telephone,
-        public readonly string $specialite
+        public readonly string $specialite,
+        public readonly ?array $moyens_paiement = null,
+        public readonly ?array $motifs_visite = null
     ) {}
 }

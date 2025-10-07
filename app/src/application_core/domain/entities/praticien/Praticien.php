@@ -13,6 +13,8 @@ class Praticien {
     private string $email;
     private string $telephone;
     private string $specialite;
+    private ?array $moyens_paiement;
+    private ?array $motifs_visite;
 
     public function __construct(
         string $id,
@@ -21,7 +23,9 @@ class Praticien {
         string $ville,
         string $email,
         string $telephone,
-        string $specialite
+        string $specialite,
+        ?array $moyens_paiement = null,
+        ?array $motifs_visite = null
     ) {
         $this->id = $id;
         $this->nom = $nom;
@@ -30,6 +34,8 @@ class Praticien {
         $this->email = $email;
         $this->telephone = $telephone;
         $this->specialite = $specialite;
+        $this->moyens_paiement = $moyens_paiement;
+        $this->motifs_visite = $motifs_visite;
     }
 
 

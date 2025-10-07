@@ -69,7 +69,9 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             ville: $array[0]['ville'],
             email: $array[0]['email'],
             telephone: $array[0]['telephone'],
-            specialite: $array[0]['specialite']
+            specialite: $array[0]['specialite'],
+            moyens_paiement: $array[0]['moyens_paiement'],
+            motifs_visite: $array[0]['motifs_visite']
         );
     }
 
