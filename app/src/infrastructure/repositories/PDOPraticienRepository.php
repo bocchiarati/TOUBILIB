@@ -2,9 +2,10 @@
 
 namespace toubilib\infra\repositories;
 
+use DI\NotFoundException;
 use Exception;
 use PDO;
-use PhpParser\Node\Expr\List_;
+use Slim\Exception\HttpInternalServerErrorException;
 use toubilib\core\domain\entities\praticien\Praticien;
 use toubilib\infra\repositories\interface\PraticienRepositoryInterface;
 
@@ -22,22 +23,25 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             $query = $this->prati_pdo->query("SELECT praticien.id, nom, prenom, ville, email, specialite.libelle, telephone, email as specialite FROM praticien
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id");
             $array = $query->fetchAll(PDO::FETCH_ASSOC);
-            $res = [];
-            foreach ($array as $praticien) {
-                $res[] = new Praticien(
-                    id: $praticien['id'],
-                    nom: $praticien['nom'],
-                    prenom: $praticien['prenom'],
-                    ville: $praticien['ville'],
-                    email: $praticien['email'],
-                    telephone: $praticien['telephone'],
-                    specialite: $praticien['specialite']
-                );
-            }
-            return $res;
-        } catch (\Throwable $e) {
+        } catch (HttpInternalServerErrorException $e) {
+            //500
+            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+        } catch(\Throwable $e) {
             throw new Exception("Erreur lors de la reception des praticiens.");
         }
+        $res = [];
+        foreach ($array as $praticien) {
+            $res[] = new Praticien(
+                id: $praticien['id'],
+                nom: $praticien['nom'],
+                prenom: $praticien['prenom'],
+                ville: $praticien['ville'],
+                email: $praticien['email'],
+                telephone: $praticien['telephone'],
+                specialite: $praticien['specialite']
+            );
+        }
+        return $res;
     }
 
     public function getPraticien($id): Praticien {
@@ -45,33 +49,52 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             $query = $this->prati_pdo->query("SELECT praticien.id, praticien.nom, praticien.ville, praticien.email, praticien.prenom, specialite.libelle as specialite, praticien.email, praticien.telephone FROM praticien
                                           INNER JOIN specialite ON praticien.specialite_id = specialite.id
                                           WHERE praticien.id = '$id'");
-        } catch (\Throwable $e) {
+        } catch (HttpInternalServerErrorException $e) {
+            //500
+            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+        } catch(\Throwable $e) {
             throw new Exception("Erreur lors de la reception du praticien.");
         }
 
-        $array = $query->fetchAll(PDO::FETCH_ASSOC);
-        try {
-            $array[0]['moyens_paiement'] = $this->getMoyenPaiement($id);
-        } catch (\Exception $e) {
-            throw new Exception("Erreur lors de la reception des moyens de paiement.");
+        $array = $query->fetch(PDO::FETCH_ASSOC);
+        if(!$array) {
+            throw new NotFoundException("Le praticien ayant pour id ".$id." n'existe pas.");
         }
 
         try {
-            $array[0]['motifs_visite'] = $this->getMotifsVisite($id);
-        } catch (\Exception $e) {
+            $array['moyens_paiement'] = $this->getMoyenPaiement($id);
+        } catch (NotFoundException $e) {
+            //404
+            throw new NotFoundException("Le praticien ayant pour id ".$id." n'existe pas.");
+        } catch (HttpInternalServerErrorException) {
+            //500
+            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+        } catch(\Throwable $e) {
+            throw new Exception("Erreur lors de la reception du moyen de paiement.");
+        }
+
+        try {
+            $array['motifs_visite'] = $this->getMotifsVisite($id);
+        } catch (NotFoundException $e) {
+            //404
+            throw new NotFoundException("Le praticien ayant pour id ".$id." n'existe pas.");
+        } catch (HttpInternalServerErrorException) {
+            //500
+            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+        } catch(\Throwable $e) {
             throw new Exception("Erreur lors de la reception des motifs de visite.");
         }
 
         return new Praticien(
-            id: $array[0]['id'],
-            nom: $array[0]['nom'],
-            prenom: $array[0]['prenom'],
-            ville: $array[0]['ville'],
-            email: $array[0]['email'],
-            telephone: $array[0]['telephone'],
-            specialite: $array[0]['specialite'],
-            moyens_paiement: $array[0]['moyens_paiement'],
-            motifs_visite: $array[0]['motifs_visite']
+            id: $array['id'],
+            nom: $array['nom'],
+            prenom: $array['prenom'],
+            ville: $array['ville'],
+            email: $array['email'],
+            telephone: $array['telephone'],
+            specialite: $array['specialite'],
+            moyens_paiement: $array['moyens_paiement'],
+            motifs_visite: $array['motifs_visite']
         );
     }
 
@@ -80,7 +103,10 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             $motifs_visite = $this->prati_pdo->query("SELECT motif_visite.libelle as motif_visite FROM motif_visite
                                            INNER JOIN praticien2motif ON motif_visite.id = praticien2motif.motif_id
                                            WHERE praticien2motif.praticien_id = '$id'");
-        } catch (\Throwable $e) {
+        } catch (HttpInternalServerErrorException) {
+            //500
+            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+        } catch(\Throwable $e) {
             throw new Exception("Erreur lors de la reception des motifs de visite.");
         }
 
@@ -93,8 +119,11 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
             $moyens_paiement = $this->prati_pdo->query("SELECT moyen_paiement.libelle as moyen_paiement FROM moyen_paiement
                                            INNER JOIN praticien2moyen ON moyen_paiement.id = praticien2moyen.moyen_id
                                            WHERE praticien2moyen.praticien_id = '$id'");
-        } catch (\Throwable $e) {
-            throw new Exception("Erreur lors de la reception des moyens de paiement.");
+        } catch (HttpInternalServerErrorException) {
+            //500
+            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+        } catch(\Throwable $e) {
+            throw new Exception("Erreur lors de la reception du moyen de paiement.");
         }
 
         $res = $moyens_paiement->fetchAll(PDO::FETCH_ASSOC);
