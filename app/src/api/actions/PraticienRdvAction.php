@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 
-class PraticiensRdvAction {
+class PraticienRdvAction {
     private ServiceRendezVousInterface $serviceRdv;
 
     public function __construct(ServiceRendezVousInterface $serviceRdv) {
