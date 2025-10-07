@@ -29,9 +29,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
      * @throws \Exception
      */
     public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array {
-        if(empty($debut) || empty($fin)) {
-            $debut = (new \DateTime())->setTime(8, 0)->format('Y-m-d H:i:s');
-            $fin = (new \DateTime())->setTime(19,0)->format('Y-m-d H:i:s');
+        if (empty($debut)) {
+            $debut = (new \DateTime())->setDate(1900,01,01)->setTime(8, 0)->format('Y-m-d H:i:s');
+        }
+        if (empty($fin)) {
+            $fin = (new \DateTime())->setDate(9999,01,01)->setTime(19,0)->format('Y-m-d H:i:s');
         }
 
         try {
