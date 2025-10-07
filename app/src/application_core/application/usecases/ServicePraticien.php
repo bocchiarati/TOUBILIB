@@ -19,22 +19,22 @@ class ServicePraticien implements ServicePraticienInterface {
     public function listerPraticiens(): array {
         try {
             $praticiens = $this->praticienRepository->getPraticiens();
-            $res = [];
-            foreach ($praticiens as $praticien) {
-                $res[] = new PraticienDTO(
-                    id: $praticien->id,
-                    nom: $praticien->nom,
-                    prenom: $praticien->prenom,
-                    ville: $praticien->ville,
-                    email: $praticien->email,
-                    telephone: $praticien->telephone,
-                    specialite: $praticien->specialite
-                );
-            }
-            return $res;
         } catch (\Throwable $th) {
             throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception des praticiens.");
         }
+        $res = [];
+        foreach ($praticiens as $praticien) {
+            $res[] = new PraticienDTO(
+                id: $praticien->id,
+                nom: $praticien->nom,
+                prenom: $praticien->prenom,
+                ville: $praticien->ville,
+                email: $praticien->email,
+                telephone: $praticien->telephone,
+                specialite: $praticien->specialite
+            );
+        }
+        return $res;
     }
 
     /**

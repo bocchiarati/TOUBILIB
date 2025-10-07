@@ -3,14 +3,11 @@
 namespace toubilib\core\application\usecases;
 
 use DateTime;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpInternalServerErrorException;
 use toubilib\api\dtos\RendezVousDTO;
 use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\api\dtos\InputRendezVousDTO;
-use toubilib\core\exceptions\CreneauException;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
@@ -38,10 +35,26 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         try {
-            return $this->rendezVousRepository->getCreneauxOccupes($debut, $fin, $praticien_id);
+            $rdvs = $this->rendezVousRepository->getCreneauxOccupes($debut, $fin, $praticien_id);
         } catch (\Throwable $th) {
-            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception des creneaux.");
+            throw new \Exception($th->getMessage());
         }
+        $res = [];
+        foreach ($rdvs as $rdv) {
+            $res[] = new RendezVousDTO(
+                id: $rdv->id,
+                praticien_id: $rdv->praticien_id,
+                patient_id: $rdv->patient_id,
+                status: $rdv->status,
+                duree: $rdv->duree,
+                date_heure_fin: $rdv->date_heure_fin,
+                motif_visite: $rdv->motif_visite,
+                date_heure_debut: $rdv->date_heure_debut,
+                patient_email: $rdv->patient_email,
+                date_creation: $rdv->date_creation
+            );
+        }
+        return $res;
     }
 
     /**
@@ -54,12 +67,13 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 id: $rdv->id,
                 praticien_id: $rdv->praticien_id,
                 patient_id: $rdv->patient_id,
-                date_heure_debut: $rdv->date_heure_debut,
                 status: $rdv->status,
                 duree: $rdv->duree,
                 date_heure_fin: $rdv->date_heure_fin,
-                date_creation: $rdv->date_creation,
-                motif_visite: $rdv->motif_visite
+                motif_visite: $rdv->motif_visite,
+                date_heure_debut: $rdv->date_heure_debut,
+                patient_email: $rdv->patient_email,
+                date_creation: $rdv->date_creation
             );
         } catch (\Throwable $th) {
             throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception du rendez-vous.");
