@@ -1,0 +1,10 @@
+<?php
+
+namespace toubilib\core\application\usecases\interfaces;
+
+use toubilib\api\dtos\AuthnDTO;
+use toubilib\api\dtos\InputAuthnDTO;
+
+interface ServiceAuthnInterface {
+    public function signin(InputAuthnDTO $user_dto): AuthnDTO;
+}
