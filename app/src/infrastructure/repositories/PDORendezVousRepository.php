@@ -10,6 +10,7 @@ use PDO;
 use Slim\Exception\HttpInternalServerErrorException;
 use toubilib\core\domain\entities\rdv\RendezVous;
 use toubilib\core\exceptions\CreneauException;
+use toubilib\core\exceptions\EntityNotFoundException;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class PDORendezVousRepository implements RendezVousRepositoryInterface {
@@ -40,7 +41,7 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
             $array = $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (HttpInternalServerErrorException) {
             //500
-            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+            throw new Exception("Erreur lors de l'execution de la requete SQL.");
         } catch(\Throwable) {
             throw new Exception("Erreur lors de la reception des rendez-vous.");
         }
@@ -62,18 +63,23 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         return $res;
     }
 
+    /**
+     * @throws EntityNotFoundException
+     * @throws Exception
+     */
     public function getRDV(string $id_prat, string $id_rdv): RendezVous {
         try {
             $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
         } catch (HttpInternalServerErrorException) {
             //500
-            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+            throw new Exception("Erreur lors de l'execution de la requete SQL.");
         } catch(\Throwable) {
             throw new Exception("Erreur lors de la reception du rendez-vous.");
         }
+
         $rdv = $query->fetch(PDO::FETCH_ASSOC);
         if (!$rdv) {
-            throw new NotFoundException("Le rendez-vous ayant pour id ".$id_rdv." ou le praticien ayant pour id ".$id_prat." n'existe pas.");
+            throw new EntityNotFoundException("Le rendez-vous ayant pour id ".$id_rdv." avec le praticien ayant pour id ".$id_prat." n'existe pas.", "RDV");
         } else {
             return new RendezVous(
                 id: $rdv['id'],
@@ -114,7 +120,7 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
                       '$dto->duree', '$dto->motif_visite')");
         } catch (HttpInternalServerErrorException) {
             //500
-            throw new HttpInternalServerErrorException("Erreur lors de l'execution de la requete SQL.");
+            throw new Exception("Erreur lors de l'execution de la requete SQL.");
         } catch(\Throwable $e) {
             throw new Exception("Erreur lors de la création du rendez-vous.");
         }

@@ -3,11 +3,14 @@
 namespace toubilib\core\application\usecases;
 
 use DateTime;
+use Exception;
 use toubilib\api\dtos\RendezVousDTO;
 use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\api\dtos\InputRendezVousDTO;
+use toubilib\core\exceptions\CreneauException;
+use toubilib\core\exceptions\EntityNotFoundException;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
@@ -24,7 +27,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
+     * @throws CreneauException
      */
     public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array {
         if (empty($debut)) {
@@ -36,8 +40,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         try {
             $rdvs = $this->rendezVousRepository->getCreneauxOccupes($debut, $fin, $praticien_id);
-        } catch (\Throwable $th) {
-            throw new \Exception($th->getMessage());
+        } catch (CreneauException $e) {
+            throw new CreneauException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
         $res = [];
         foreach ($rdvs as $rdv) {
@@ -58,7 +64,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
+     * @throws EntityNotFoundException
      */
     public function getRDV(string $id_prat, string $id_rdv): RendezVousDTO {
         try {
@@ -75,91 +82,96 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 patient_email: $rdv->patient_email,
                 date_creation: $rdv->date_creation
             );
-        } catch (\Throwable $th) {
-            throw new \Exception("Erreur ".$th->getCode().": probleme lors de la reception du rendez-vous.");
+        } catch (EntityNotFoundException $e) {
+            throw new EntityNotFoundException($e->getMessage(), $e->getEntity());
+        } catch (\Exception $th) {
+            throw new Exception("Erreur ".$th->getCode().": probleme lors de la reception du rendez-vous.");
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
+     * @throws EntityNotFoundException
      */
     public function creerRendezVous(InputRendezVousDTO $dto): array {
         try {
-            //vérification si le praticien existe
-            $prat = $this->servicePraticien->getPraticien($dto->praticien_id);
-            //vérification si le patient existe
             $this->servicePatient->getPatient($dto->patient_id);
-            //vérification si le motif de visite existe
-            if(!(in_array($dto->motif_visite,$prat[0]['motifs_visite']))) {
-                return [
-                    "success" => false,
-                    "message" => "RDV n'a pu etre cree.\nLe motif de visite n'existe pas pour ce praticien."
-                ];
-            }
+            $prat = $this->servicePraticien->getPraticien($dto->praticien_id);
+        } catch (EntityNotFoundException $e) {
+            throw new EntityNotFoundException($e->getEntity()." introuvable", $e->getEntity());
+        } catch (Exception $e) {
+            throw new Exception("Erreur Serveur", $e->getCode());
+        }
 
+        //vérification si le motif de visite existe
+        var_dump($prat->motifs_visite);
+        if (!(in_array($dto->motif_visite, $prat->motifs_visite))) {
+            throw new EntityNotFoundException("motif visite praticien introuvable", "motif visite praticien");
+        }
+
+        try {
             //vérification si le créneau est disponible
             $date_heure_debut = DateTime::createFromFormat('Y-m-d H:i:s', $dto->date_heure_debut);
             $date_heure_fin = DateTime::createFromFormat('Y-m-d H:i:s', $dto->date_heure_fin);
-            $heureDebut = (int)$date_heure_debut->format('H');
-            $minuteDebut = (int)$date_heure_debut->format('i');
-            $heureFin = (int)$date_heure_fin->format('H');
-            $minuteFin = (int)$date_heure_fin->format('i');
-            //entre 8h et 19h
-            if (!(($heureDebut >= 8) && ($heureFin < 19 || ($heureFin === 19 && $minuteFin === 0)))) {
-                return [
-                    'success' => false,
-                    "message" => "RDV n'a pu etre cree.\nLes horaires doivent etre compris entre 8h et 19h."
-                ];
-            }
-
-            //horaire debut < horaire fin
-            if (($heureDebut < $heureFin) || (($heureDebut === $heureFin) && ($minuteFin <= $minuteDebut))) {
-                return [
-                    'success' => false,
-                    "message" => "RDV n'a pu etre cree.\nLes horaires de fin du rdv ne peuvent etre avant les horaires de debut."
-                ];
-            }
-
-
-            $nJourDebut = (int)$date_heure_debut->format('N');
-            $nJourFin = (int)$date_heure_fin->format('N');
-            //du lundi au venredi
-            if (($nJourDebut > 5) || ($nJourFin > 5)) {
-                return [
-                    'success' => false,
-                    "message" => "RDV n'a pu etre cree.\nLes horaires doivent etre compris entre lundi et vendredi."
-                ];
-            }
-
-            //horaire debut = horaire fin
-            if ($nJourFin !== $nJourDebut) {
-                return [
-                    'success' => false,
-                    "message" => "RDV n'a pu etre cree.\nLe jour de debut et le jour de fin doivent etre les même."
-                ];
-            }
-
-            //vérification praticien disponible
-            $rdvs = $this->listerRDV($dto->praticien_id,$dto->date_heure_debut,$dto->date_heure_fin);
-            if ($rdvs != []) {
-                return [
-                    'success' => false,
-                    "message" => "RDV n'a pu etre cree.\nLe creneau est deja occupe."
-                ];
-            }
-
-            $this->rendezVousRepository->createRdv($dto);
-            return [
-                'success' => true,
-                "message" => "RDV cree."
-            ];
         } catch (\Throwable $th) {
-            throw new \Exception("Erreur lors de l'obtention du service");
+            throw new Exception("Erreur format date");
         }
+
+        $heureDebut = (int)$date_heure_debut->format('H');
+        $minuteDebut = (int)$date_heure_debut->format('i');
+        $heureFin = (int)$date_heure_fin->format('H');
+        $minuteFin = (int)$date_heure_fin->format('i');
+
+        if (!(($heureDebut >= 8) && ($heureFin < 19 || ($heureFin === 19 && $minuteFin === 0)))) {
+            //entre 8h et 19h
+            throw new CreneauException("Les horaires doivent etre compris entre 8h et 19h.");
+        }
+
+
+        //horaire debut < horaire fin
+        if (($heureDebut < $heureFin) || (($heureDebut === $heureFin) && ($minuteFin <= $minuteDebut))) {
+            throw new CreneauException("Les horaires de fin du rdv ne peuvent etre avant les horaires de debut.");
+        }
+
+
+        $nJourDebut = (int)$date_heure_debut->format('N');
+        $nJourFin = (int)$date_heure_fin->format('N');
+        //du lundi au venredi
+        if (($nJourDebut > 5) || ($nJourFin > 5)) {
+            throw new CreneauException("Le rendez-vous doit etre compris entre lundi et vendredi.");
+        }
+
+        //horaire debut = horaire fin
+        if ($nJourFin !== $nJourDebut) {
+            throw new CreneauException("Le jour de debut et le jour de fin doivent etre identiques");
+        }
+
+        try {
+            //vérification praticien disponible
+            $rdvs = $this->listerRDV($dto->praticien_id, $dto->date_heure_debut, $dto->date_heure_fin);
+        } catch (\Exception $e) {
+            throw new Exception("Erreur liste des RDV");
+        }
+
+        if ($rdvs != []) {
+            throw new CreneauException("Creneau déjà occupé");
+        }
+
+
+        try {
+            $this->rendezVousRepository->createRdv($dto);
+        } catch (\Exception $e) {
+            throw new Exception("Erreur lors de la creation d'un rdv");
+        }
+        return [
+            'success' => true,
+            "message" => "RDV cree."
+        ];
+
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function annulerRendezVous($id_prat, $id_rdv): array {
         try {
