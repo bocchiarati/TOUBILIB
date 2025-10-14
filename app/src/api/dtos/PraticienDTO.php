@@ -15,6 +15,18 @@ class PraticienDTO {
         public readonly string $telephone,
         public readonly string $specialite,
         public readonly ?array $moyens_paiement = null,
-        public readonly ?array $motifs_visite = null
+        public readonly ?array $motifs_visite = null,
+        public ?string $link = null
     ) {}
+
+    /**
+     * @throws Exception
+     */
+    public function __get(string $property) {
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
+
+        throw new Exception("La propriété '$property' n'existe pas.");
+    }
 }
