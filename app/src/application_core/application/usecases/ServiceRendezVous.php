@@ -128,7 +128,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
 
         //horaire debut < horaire fin
-        if (($heureDebut < $heureFin) || (($heureDebut === $heureFin) && ($minuteFin <= $minuteDebut))) {
+        if (($heureDebut > $heureFin) || (($heureDebut === $heureFin) && ($minuteFin <= $minuteDebut))) {
             throw new CreneauException("Les horaires de fin du rdv ne peuvent etre avant les horaires de debut.");
         }
 
