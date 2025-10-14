@@ -7,6 +7,8 @@ use toubilib\api\actions\PraticienRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
 use toubilib\api\actions\RdvDetailsAction;
+use toubilib\api\actions\SigninAction;
+use toubilib\core\application\usecases\interfaces\ServiceAuthnInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 
@@ -29,6 +31,9 @@ return [
     },
     AnnulerRdvAction::class=> function (ContainerInterface $c) {
         return new AnnulerRdvAction($c->get(ServiceRendezVousInterface::class));
+    },
+    SigninAction::class=> function (ContainerInterface $c) {
+        return new SigninAction($c->get(ServiceAuthnInterface::class));
     },
 ];
 
