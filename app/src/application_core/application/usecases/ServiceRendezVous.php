@@ -104,7 +104,6 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         //vérification si le motif de visite existe
-        var_dump($prat->motifs_visite);
         if (!(in_array($dto->motif_visite, $prat->motifs_visite))) {
             throw new EntityNotFoundException("motif visite praticien introuvable", "motif visite praticien");
         }
