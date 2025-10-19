@@ -16,7 +16,7 @@ class PraticienDTO {
         public readonly string $specialite,
         public readonly ?array $moyens_paiement = null,
         public readonly ?array $motifs_visite = null,
-        public ?string $link = null
+        public ?array $links = null
     ) {}
 
     /**

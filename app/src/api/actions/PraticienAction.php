@@ -24,8 +24,17 @@ class PraticienAction {
         }
 
         try {
+            $praticien = $this->servicePraticien->getPraticien($id_prat);
+            $praticien->links = [
+                "self" => [
+                    "href" => "/praticiens/" . $praticien->id
+                ],
+                "rdvs" => [
+                    "href" => "/praticiens/" . $praticien->id . "/rdvs"
+                ]
+            ];
+            $response->getBody()->write(json_encode($praticien));
 
-            $response->getBody()->write(json_encode($this->servicePraticien->getPraticien($id_prat)));
             return $response->withHeader("Content-Type", "application/json");
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());

@@ -14,6 +14,7 @@ class RendezVousDTO {
         public readonly ?string $date_heure_debut = null,
         public readonly ?string $patient_email = null,
         public readonly ?string $date_creation = null,
+        public ?array $links = null,
 
     ) {}
 }

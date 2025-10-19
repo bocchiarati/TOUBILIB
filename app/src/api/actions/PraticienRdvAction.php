@@ -26,7 +26,15 @@ class PraticienRdvAction {
         $date_fin = $queryParams['date_fin'] ?? null;
 
         try {
-            $response->getBody()->write(json_encode($this->serviceRdv->listerRDV($id_prat, $date_debut, $date_fin)));
+            $res = $this->serviceRdv->listerRDV($id_prat, $date_debut, $date_fin);
+            foreach ($res as $rdvs) {
+                $rdvs->links = [
+                    'detail' => [
+                        "href" => "/praticiens/" . $rdvs->praticien_id . "/rdvs/" . $rdvs->id
+                    ]
+                ];
+            }
+            $response->getBody()->write(json_encode($res));
             return $response->withHeader("Content-Type", "application/json");
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());

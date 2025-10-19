@@ -19,7 +19,11 @@ class PraticiensAction {
         try {
             $res = $this->servicePraticien->listerPraticiens();
             foreach ($res as $praticien) {
-                $praticien->link = "/praticiens/" . $praticien->id;
+                $praticien->links = [
+                    'detail' => [
+                        "href" => "/praticiens/" . $praticien->id
+                    ]
+                ];
             }
             $response->getBody()->write(json_encode($res));
             return $response->withHeader("Content-Type", "application/json");

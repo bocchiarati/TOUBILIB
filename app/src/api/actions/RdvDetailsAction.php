@@ -34,6 +34,15 @@ class RdvDetailsAction {
         }
 
         try {
+            $rdv= $this->serviceRdv->getRDV($id_prat, $id_rdv);
+            $rdv->links = [
+                "self" => [
+                    "href" => "/praticiens/" . $rdv->praticien_id . "/rdvs/" . $rdv->id
+                ],
+                "praticien" => [
+                    "href" => "/praticiens/" . $rdv->praticien_id
+                ],
+            ];
             $response->getBody()->write(json_encode(($this->serviceRdv->getRDV($id_prat, $id_rdv))));
             return $response->withHeader("Content-Type", "application/json");
         }  catch (EntityNotFoundException $e) {
