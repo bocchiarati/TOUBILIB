@@ -5,6 +5,8 @@ namespace toubilib\core\domain\entities\user;
 use Exception;
 
 class User {
+    const PRATICIEN = 2;
+    const PATIENT = 1;
     private string $id;
     private string $email;
     private string $password;

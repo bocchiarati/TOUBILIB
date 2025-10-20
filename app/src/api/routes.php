@@ -40,6 +40,8 @@ return function( App $app): App {
     $app->post("/signin", SigninAction::class)
         ->add(AuthnSigninValidationMiddleware::class);
 
+    $app->post("/refresh", RefreshAction::class);
+
 //    DELETE
     $app->delete("/praticiens/{id_prat}/rdvs/{id_rdv}", AnnulerRdvAction::class)
         ->add(AuthzSuppressionMiddleware::class)
