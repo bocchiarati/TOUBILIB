@@ -8,6 +8,7 @@ use toubilib\api\actions\PraticienRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
 use toubilib\api\actions\RdvDetailsAction;
+use toubilib\api\actions\RefreshAction;
 use toubilib\api\actions\SigninAction;
 use toubilib\api\middlewares\AuthnSigninValidationMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvDetailMiddleware;
