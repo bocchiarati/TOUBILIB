@@ -23,7 +23,7 @@ class RdvDetailsAction {
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $id_prat = $args['id_prat'] ?? null;
-        $id_rdv = $args['rdv_id'] ?? null;
+        $id_rdv = $args['id_rdv'] ?? null;
 
         if(empty($id_prat)) {
             throw new HttpBadRequestException($request,"Saisissez un id de Praticien");
