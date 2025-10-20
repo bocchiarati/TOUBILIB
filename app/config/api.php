@@ -15,6 +15,8 @@ use toubilib\api\middlewares\AuthzCreationMiddleware;
 use toubilib\api\middlewares\AuthzSuppressionMiddleware;
 use toubilib\api\middlewares\JwtAuthMiddleware;
 use toubilib\core\application\usecases\interfaces\ServiceAuthnInterface;
+use toubilib\core\application\usecases\interfaces\ServiceAuthzPatientInterface;
+use toubilib\core\application\usecases\interfaces\ServiceAuthzPraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 
@@ -40,6 +42,18 @@ return [
     },
     SigninAction::class=> function (ContainerInterface $c) {
         return new SigninAction($c->get(ServiceAuthnInterface::class));
+    },
+
+    AuthzCreationMiddleware::class => function (ContainerInterface $c) {
+        return new AuthzCreationMiddleware($c->get(ServiceAuthzPatientInterface::class), $c->get(ServiceAuthzPraticienInterface::class));
+    },
+
+    AuthzAccessRdvsMiddleware::class => function (ContainerInterface $c) {
+        return new AuthzAccessRdvsMiddleware($c->get(ServiceAuthzPraticienInterface::class));
+    },
+
+    AuthzAccessRdvDetailMiddleware::class => function (ContainerInterface $c) {
+        return new AuthzAccessRdvDetailMiddleware($c->get(ServiceAuthzPatientInterface::class), $c->get(ServiceAuthzPraticienInterface::class), $c->get(ServiceRendezVousInterface::class));
     },
 
     AuthzSuppressionMiddleware::class => function (ContainerInterface $c) {
