@@ -8,6 +8,11 @@ use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
 use toubilib\api\actions\RdvDetailsAction;
 use toubilib\api\actions\SigninAction;
+use toubilib\api\middlewares\AuthnSigninValidationMiddleware;
+use toubilib\api\middlewares\AuthzAccessRdvDetailMiddleware;
+use toubilib\api\middlewares\AuthzAccessRdvsMiddleware;
+use toubilib\api\middlewares\AuthzCreationMiddleware;
+use toubilib\api\middlewares\AuthzSuppressionMiddleware;
 use toubilib\api\middlewares\JwtAuthMiddleware;
 use toubilib\core\application\usecases\interfaces\ServiceAuthnInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
@@ -36,6 +41,15 @@ return [
     SigninAction::class=> function (ContainerInterface $c) {
         return new SigninAction($c->get(ServiceAuthnInterface::class));
     },
+
+    AuthzSuppressionMiddleware::class => function (ContainerInterface $c) {
+        return new AuthzSuppressionMiddleware($c->get(ServiceAuthzPatientInterface::class), $c->get(ServiceAuthzPraticienInterface::class), $c->get(ServiceRendezVousInterface::class));
+    },
+
+    AuthnSigninValidationMiddleware::class => function (ContainerInterface $c) {
+        return new AuthnSigninValidationMiddleware();
+    },
+
     JwtAuthMiddleware::class => function (ContainerInterface $c) {
         return new JwtAuthMiddleware(parse_ini_file($c->get('db.config'))["JWT_SECRET"]);
     }
