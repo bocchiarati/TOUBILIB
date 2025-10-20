@@ -1,11 +1,17 @@
 <?php
 
 use Psr\Container\ContainerInterface;
+use toubilib\core\application\usecases\AuthnProvider;
+use toubilib\core\application\usecases\interfaces\AuthnProviderInterface;
 use toubilib\core\application\usecases\interfaces\ServiceAuthnInterface;
+use toubilib\core\application\usecases\interfaces\ServiceAuthzPatientInterface;
+use toubilib\core\application\usecases\interfaces\ServiceAuthzPraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServicePatientInterface;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\application\usecases\interfaces\ServiceRendezVousInterface;
 use toubilib\core\application\usecases\ServiceAuthn;
+use toubilib\core\application\usecases\ServiceAuthzPatient;
+use toubilib\core\application\usecases\ServiceAuthzPraticien;
 use toubilib\core\application\usecases\ServicePatient;
 use toubilib\core\application\usecases\ServicePraticien;
 use toubilib\core\application\usecases\ServiceRendezVous;
@@ -49,7 +55,19 @@ return [
     },
 
     ServiceAuthnInterface::class => function (ContainerInterface $c) {
-        return new ServiceAuthn($c->get(AuthnRepositoryInterface::class));
+        return new ServiceAuthn($c->get(AuthnProviderInterface::class), parse_ini_file($c->get('db.config'))["JWT_SECRET"]);
+    },
+
+    AuthnProviderInterface::class => function (ContainerInterface $c) {
+        return new AuthnProvider($c->get(AuthnRepositoryInterface::class));
+    },
+
+    ServiceAuthzPatientInterface::class => function () {
+        return new ServiceAuthzPatient();
+    },
+
+    ServiceAuthzPraticienInterface::class => function () {
+        return new ServiceAuthzPraticien();
     },
 ];
 
