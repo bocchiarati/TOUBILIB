@@ -1,34 +1,53 @@
 <?php
 
 namespace toubilib\api\actions;
-use _PHPStan_2d0955352\Nette\Neon\Exception;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use toubilib\core\application\usecases\interfaces\ServiceAuthnInterface;
+use toubilib\core\exceptions\ConnexionException;
+use Slim\Exception\HttpInternalServerErrorException;
 
 class SigninAction {
-    private ServiceAuthnInterface $serviceAuthn;
 
-    public function __construct(ServiceAuthnInterface $serviceAuthn) {
-        $this->serviceAuthn = $serviceAuthn;
+    private ServiceAuthnInterface $authnService;
+
+    public function __construct(ServiceAuthnInterface $authnService) {
+        $this->authnService = $authnService;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+    public function __invoke(Request $request, Response $response): Response {
 
-        $user_dto = $request->getAttribute('auth_dto') ?? null;
+        // 1. On récupère le DTO que le middleware a validé et créé
+        $user_dto = $request->getAttribute('auth_dto');
 
-        if(empty($user_dto)) {
-            throw new \Exception("Erreur récupération DTO de signin.");
+        // Sécurité : si le DTO est absent, c'est une erreur de configuration
+        if ($user_dto === null) {
+            throw new HttpInternalServerErrorException($request, "Erreur de configuration du middleware.");
         }
 
+        // 2. On récupère le host
+        $host = $request->getUri()->getHost();
+
+        // 3. On appelle le service
         try {
-            $response->getBody()->write(json_encode($this->serviceAuthn->signin($user_dto)));
-            return $response->withHeader("Content-Type", "application/json");
-        } catch (\Exception $e) {
-            throw new Exception($e->getMessage());
+            $token = $this->authnService->login($user_dto, $host);
+
+            $responseData = ['token' => $token];
+
+            $response->getBody()->write(json_encode($responseData));
+            return $response
+                ->withHeader("Content-Type", "application/json")
+                ->withStatus(200);
+
+        } catch (ConnexionException $e) {
+            // 4. On gère l'échec de la connexion
+            $errorData = ['error' => $e->getMessage()];
+
+            $response->getBody()->write(json_encode($errorData));
+            return $response
+                ->withHeader("Content-Type", "application/json")
+                ->withStatus(401); // 401 Unauthorized
         }
     }
 }
