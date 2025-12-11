@@ -17,7 +17,11 @@ class PraticiensAction {
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         try {
-            $res = $this->servicePraticien->listerPraticiens();
+            $query = $request->getQueryParams();
+            $specialite = $query['specialite'] ?? null;
+            $ville = $query['ville'] ?? null;
+
+            $res = $this->servicePraticien->listerPraticiens($specialite, $ville);
             foreach ($res as $praticien) {
                 $praticien->links = [
                     'detail' => [

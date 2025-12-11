@@ -8,7 +8,7 @@
 ### 3 - Acceder a la BDD grace au port "8080"
 
 ## Liste des routes existantes :
-#### GET /praticiens => acceder a la liste des praticiens
+#### GET /praticiens => acceder a la liste des praticiens (QueryParams : ville, scpecialite)
 #### GET /praticiens/{id_prat} => detail d'un praticien en renseignant son id
 #### GET /praticiens/{id_prat}/rdvs => obtenir les rendez-vous d'un praticien
 #### GET /praticiens/{id_prat}/rdvs/{rdv_id} => acceder au detail d'un rendez-vous (un parametre de debut 'date_debut' et de fin 'date_fin' peuvent etre ajoutes en queryParams)

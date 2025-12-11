@@ -6,6 +6,6 @@ use toubilib\api\dtos\PraticienDTO;
 
 interface ServicePraticienInterface
 {
-    public function listerPraticiens(): array;
+    public function listerPraticiens(?string $specialite = null, ?string $ville = null): array;
     public function getPraticien(string $id): PraticienDTO;
 }

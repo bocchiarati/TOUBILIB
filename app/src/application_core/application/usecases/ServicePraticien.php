@@ -18,9 +18,9 @@ class ServicePraticien implements ServicePraticienInterface {
     /**
      * @throws Exception
      */
-    public function listerPraticiens(): array {
+    public function listerPraticiens(?string $specialite = null, ?string $ville = null): array {
         try {
-            $praticiens = $this->praticienRepository->getPraticiens();
+            $praticiens = $this->praticienRepository->getPraticiens($specialite, $ville);
         } catch (\Exception $e) {
             throw new \Exception("Erreur lors de l'obtention des praticiens\n Message erreur PDO : " . $e->getMessage());
         }

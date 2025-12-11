@@ -18,11 +18,31 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
         $this->prati_pdo = $prati_pdo;
     }
 
-    public function getPraticiens() : array {
+    public function getPraticiens(?string $specialite = null, ?string $ville = null) : array {
         try {
-            $query = $this->prati_pdo->query("SELECT praticien.id, nom, prenom, ville, email, specialite.libelle, telephone, email as specialite FROM praticien
-                                          INNER JOIN specialite ON praticien.specialite_id = specialite.id");
-            $array = $query->fetchAll(PDO::FETCH_ASSOC);
+            $sql = "SELECT praticien.id, nom, prenom, ville, email, specialite.libelle as specialite, telephone, email FROM praticien
+                                          INNER JOIN specialite ON praticien.specialite_id = specialite.id";
+
+            $conditions = [];
+            $params = [];
+
+            if ($specialite !== null) {
+                $conditions[] = "specialite.libelle = :specialite";
+                $params[':specialite'] = $specialite;
+            }
+
+            if ($ville !== null) {
+                $conditions[] = "praticien.ville = :ville";
+                $params[':ville'] = $ville;
+            }
+
+            if (!empty($conditions)) {
+                $sql .= " WHERE " . implode(" AND ", $conditions);
+            }
+
+            $stmt = $this->prati_pdo->prepare($sql);
+            $stmt->execute($params);
+            $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (HttpInternalServerErrorException $e) {
             //500
             throw new Exception("Erreur lors de l'execution de la requete SQL.");
