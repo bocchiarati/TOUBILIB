@@ -55,7 +55,7 @@ return [
     },
 
     ServiceAuthnInterface::class => function (ContainerInterface $c) {
-        return new ServiceAuthn($c->get(AuthnProviderInterface::class), parse_ini_file($c->get('db.config'))["JWT_SECRET"]);
+        return new ServiceAuthn($c->get(AuthnProviderInterface::class), $c->get(AuthnRepositoryInterface::class),parse_ini_file($c->get('db.config'))["JWT_SECRET"]);
     },
 
     AuthnProviderInterface::class => function (ContainerInterface $c) {

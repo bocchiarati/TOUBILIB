@@ -5,7 +5,9 @@ namespace toubilib\infra\repositories;
 use DI\NotFoundException;
 use Exception;
 use PDO;
+use Ramsey\Uuid\Uuid;
 use Slim\Exception\HttpInternalServerErrorException;
+use toubilib\api\dtos\CredentialsDTO;
 use toubilib\core\domain\entities\user\User;
 use toubilib\infra\repositories\interface\AuthnRepositoryInterface;
 
@@ -39,6 +41,26 @@ class PDOAuthnRepository implements AuthnRepositoryInterface {
                 password: $res['password'],
                 role: $res['role']
             );
+        }
+    }
+
+    public function saveUser(CredentialsDTO $cred, ?int $role = 0): void
+    {
+        try {
+            $id = Uuid::uuid4()->toString();
+            // Le mot de passe est hashé dans le DTO
+            $stmt = $this->authn_pdo->prepare(
+                "INSERT INTO users (id, email, password, role) VALUES (:id, :email, :password, :role)"
+            );
+            $stmt->execute([
+                'id' => $id,
+                'email' => $cred->email,
+                'password' => $cred->password,
+                'role' => $role
+            ]);
+
+        } catch(\PDOException $e) {
+            throw new \Exception("Erreur lors de l'enregistrement de l'utilisateur : " . $e->getMessage());
         }
     }
 }
