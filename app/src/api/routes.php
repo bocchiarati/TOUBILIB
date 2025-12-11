@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Slim\App;
 use toubilib\api\actions\AnnulerRdvAction;
 use toubilib\api\actions\CreateRdvAction;
+use toubilib\api\actions\PatientRdvAction;
 use toubilib\api\actions\PraticienRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
@@ -28,6 +29,9 @@ return function( App $app): App {
         ->add(JwtAuthMiddleware::class);
 
     $app->get("/praticiens/{id_prat}/rdvs/{id_rdv}", RdvDetailsAction::class)
+        ->add(AuthzAccessRdvDetailMiddleware::class)
+        ->add(JwtAuthMiddleware::class);
+    $app->get("/patients/{id_pat}/rdvs", PatientRdvAction::class)
         ->add(AuthzAccessRdvDetailMiddleware::class)
         ->add(JwtAuthMiddleware::class);
 

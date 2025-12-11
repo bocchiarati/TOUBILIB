@@ -30,7 +30,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
      * @throws Exception
      * @throws CreneauException
      */
-    public function listerRDV(string $praticien_id, ?string $debut = null, ?string $fin = null): array {
+    public function listerRDV(int $role, string $id, ?string $debut = null, ?string $fin = null): array {
         if (empty($debut)) {
             $debut = (new \DateTime())->setDate(1900,01,01)->setTime(8, 0)->format('Y-m-d H:i:s');
         }
@@ -39,7 +39,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         try {
-            $rdvs = $this->rendezVousRepository->getCreneauxOccupes($debut, $fin, $praticien_id);
+            $rdvs = $this->rendezVousRepository->getCreneauxOccupes($role, $debut, $fin, $id);
         } catch (CreneauException $e) {
             throw new CreneauException($e->getMessage());
         } catch (\Exception $e) {

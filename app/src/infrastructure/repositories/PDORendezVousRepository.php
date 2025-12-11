@@ -22,7 +22,7 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         $this->rdv_pdo = $rdv_pdo;
     }
 
-    public function getCreneauxOccupes(string $debut, string $fin, string $praticien_id): array {
+    public function getCreneauxOccupes(int $role, string $debut, string $fin, string $id): array {
         // FORMAT DATE : YYYY-MM-DD
         if (!$this->estDateValide($debut)) {
             throw new CreneauException("Le format de la date de debut est invalide.");
@@ -37,8 +37,17 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         }
 
         try {
-            $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE date_heure_debut < '$fin' AND date_heure_fin > '$debut' AND praticien_id = '$praticien_id'");
-            $array = $query->fetchAll(PDO::FETCH_ASSOC);
+            $col = ($role === 0) ? 'praticien_id' : 'patient_id';
+
+            $stmt = $this->rdv_pdo->prepare("SELECT * FROM rdv WHERE date_heure_debut < :fin AND date_heure_fin > :debut AND $col = :id");
+
+            $stmt->execute([
+                ':debut' => $debut,
+                ':fin'   => $fin,
+                ':id'    => $id
+            ]);
+
+            $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (HttpInternalServerErrorException) {
             //500
             throw new Exception("Erreur lors de l'execution de la requete SQL.");
@@ -67,9 +76,19 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
      * @throws EntityNotFoundException
      * @throws Exception
      */
-    public function getRDV(string $id_prat, string $id_rdv): RendezVous {
+    public function getRDV(int $role, string $id, string $id_rdv): RendezVous {
         try {
-            $query = $this->rdv_pdo->query("SELECT * FROM rdv WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
+            $col = ($role === 0) ? 'praticien_id' : 'patient_id';
+
+            // Requête préparée sécurisée
+            $stmt = $this->rdv_pdo->prepare("SELECT * FROM rdv WHERE id = :id_rdv AND $col = :id_user");
+
+            $stmt->execute([
+                ':id_rdv' => $id_rdv,
+                ':id_user' => $id
+            ]);
+
+            $rdv = $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (HttpInternalServerErrorException) {
             //500
             throw new Exception("Erreur lors de l'execution de la requete SQL.");
@@ -77,9 +96,8 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
             throw new Exception("Erreur lors de la reception du rendez-vous.");
         }
 
-        $rdv = $query->fetch(PDO::FETCH_ASSOC);
         if (!$rdv) {
-            throw new EntityNotFoundException("Le rendez-vous ayant pour id ".$id_rdv." avec le praticien ayant pour id ".$id_prat." n'existe pas.", "RDV");
+            throw new EntityNotFoundException("Le rendez-vous ayant pour id ".$id_rdv." avec le praticien ayant pour id ".$id." n'existe pas.", "RDV");
         } else {
             return new RendezVous(
                 id: $rdv['id'],

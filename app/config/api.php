@@ -3,6 +3,7 @@
 use Psr\Container\ContainerInterface;
 use toubilib\api\actions\AnnulerRdvAction;
 use toubilib\api\actions\CreateRdvAction;
+use toubilib\api\actions\PatientRdvAction;
 use toubilib\api\actions\PraticienRdvAction;
 use toubilib\api\actions\PraticiensAction;
 use toubilib\api\actions\PraticienAction;
@@ -42,6 +43,9 @@ return [
     },
     SigninAction::class=> function (ContainerInterface $c) {
         return new SigninAction($c->get(ServiceAuthnInterface::class));
+    },
+    PatientRdvAction::class=> function (ContainerInterface $c) {
+        return new PatientRdvAction($c->get(ServiceRendezVousInterface::class));
     },
 
     AuthzCreationMiddleware::class => function (ContainerInterface $c) {
