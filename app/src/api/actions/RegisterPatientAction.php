@@ -38,7 +38,7 @@ class RegisterPatientAction {
                 throw new \Exception("Le mot de passe ne doit pas dépasser $maxLength caractères");
             }
 
-            $res = $this->serviceAuthn->register($user_dto, 0);
+            $res = $this->serviceAuthn->register($user_dto, 1);
             $response->getBody()->write(json_encode($res));
             return $response->withHeader("Content-Type", "application/json");
 
