@@ -12,6 +12,7 @@ use toubilib\api\actions\RdvDetailsAction;
 use toubilib\api\actions\RefreshAction;
 use toubilib\api\actions\RegisterPatientAction;
 use toubilib\api\actions\SigninAction;
+use toubilib\api\actions\ValiderRdvAction;
 use toubilib\api\middlewares\AuthnSigninValidationMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvDetailMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvsMiddleware;
@@ -55,6 +56,14 @@ return function( App $app): App {
     $app->delete("/praticiens/{id_prat}/rdvs/{id_rdv}", AnnulerRdvAction::class)
         ->add(AuthzSuppressionMiddleware::class)
         ->add(JwtAuthMiddleware::class);
+    // Status RDV -> 1 = Annuler
+
+//    PATCH
+    $app->patch("/praticiens/{id_prat}/rdvs/{id_rdv}", ValiderRdvAction::class)
+        ->add(AuthzSuppressionMiddleware::class)
+        ->add(JwtAuthMiddleware::class);
+    // Status RDV -> -1 = Non honorer
+    // Status RDV ->  2 =  honorer
 
     return $app;
 };

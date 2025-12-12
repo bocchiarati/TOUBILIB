@@ -184,4 +184,12 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             throw new Exception("Erreur ".$th->getCode().": probleme lors de l'annulation du rendez-vous.");
         }
     }
+
+    public function honorerRDV(string $id_prat, string $id_rdv, bool $statut) {
+        try {
+            $this->rendezVousRepository->honorerRDV($id_prat, $id_rdv, $statut);
+        } catch (\Throwable $th) {
+            throw new Exception("Erreur ".$th->getCode()." : ".$th->getMessage());
+        }
+    }
 }

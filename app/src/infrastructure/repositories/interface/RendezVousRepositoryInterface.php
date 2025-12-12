@@ -13,4 +13,6 @@ interface RendezVousRepositoryInterface {
     //role 1 = patient
     public function createRdv($dto) : void;
     public function annulerRdv($id_rdv);
+
+    public function honorerRDV(string $id_prat, string $id_rdv, bool $statut);
 }

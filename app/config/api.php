@@ -10,6 +10,7 @@ use toubilib\api\actions\PraticienAction;
 use toubilib\api\actions\RdvDetailsAction;
 use toubilib\api\actions\RegisterPatientAction;
 use toubilib\api\actions\SigninAction;
+use toubilib\api\actions\ValiderRdvAction;
 use toubilib\api\middlewares\AuthnSigninValidationMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvDetailMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvsMiddleware;
@@ -42,6 +43,11 @@ return [
     AnnulerRdvAction::class=> function (ContainerInterface $c) {
         return new AnnulerRdvAction($c->get(ServiceRendezVousInterface::class));
     },
+
+    ValiderRdvAction::class=> function (ContainerInterface $c) {
+        return new ValiderRdvAction($c->get(ServiceRendezVousInterface::class));
+    },
+
     SigninAction::class=> function (ContainerInterface $c) {
         return new SigninAction($c->get(ServiceAuthnInterface::class));
     },

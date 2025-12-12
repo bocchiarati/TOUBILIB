@@ -13,4 +13,6 @@ interface ServiceRendezVousInterface {
     public function getRDV(string $id_prat,string $id_rdv): RendezVousDTO;
     public function creerRendezVous(InputRendezVousDTO $dto): array;
     public function annulerRendezVous($id_prat, $id_rdv): array;
+
+    public function honorerRDV(string $id_prat, string $id_rdv, bool $statut);
 }

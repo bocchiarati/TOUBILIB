@@ -68,7 +68,7 @@ class AuthzSuppressionMiddleware {
                 break;
 
             default :
-                throw new HttpForbiddenException($request, 'Rôle inconnu ou non autorisé.');
+                throw new HttpForbiddenException($request, 'Rôle inconnu ou non autorisé. ROLE : ' . $role);
         }
 
         return $next->handle($request);

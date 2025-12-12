@@ -11,6 +11,7 @@ use Slim\Exception\HttpInternalServerErrorException;
 use toubilib\core\domain\entities\rdv\RendezVous;
 use toubilib\core\exceptions\CreneauException;
 use toubilib\core\exceptions\EntityNotFoundException;
+use toubilib\core\exceptions\InternalErrorException;
 use toubilib\infra\repositories\interface\RendezVousRepositoryInterface;
 
 class PDORendezVousRepository implements RendezVousRepositoryInterface {
@@ -48,11 +49,8 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
             ]);
 
             $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (HttpInternalServerErrorException) {
-            //500
-            throw new Exception("Erreur lors de l'execution de la requete SQL.");
         } catch(\Throwable) {
-            throw new Exception("Erreur lors de la reception des rendez-vous.");
+            throw new InternalErrorException("Erreur lors de la reception des rendez-vous.");
         }
         $res = [];
         foreach ($array as $rdv) {
@@ -129,6 +127,9 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
         return false;
     }
 
+    /**
+     * @throws InternalErrorException
+     */
     public function createRdv($dto) : void
     {
         try {
@@ -136,11 +137,8 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
             $this->rdv_pdo->query("INSERT INTO rdv (id, patient_id, praticien_id, date_heure_debut, date_heure_fin, duree, motif_visite)
                       VALUES ('$id', '$dto->patient_id', '$dto->praticien_id', '$dto->date_heure_debut', '$dto->date_heure_fin',
                       '$dto->duree', '$dto->motif_visite')");
-        } catch (HttpInternalServerErrorException) {
-            //500
-            throw new Exception("Erreur lors de l'execution de la requete SQL.");
         } catch(\Throwable $e) {
-            throw new Exception("Erreur lors de la création du rendez-vous.");
+            throw new InternalErrorException("Erreur lors de la création du rendez-vous.");
         }
         
     }
@@ -155,5 +153,20 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface {
             throw new Exception("Erreur lors de l'annulation du rendez-vous.");
         }
 
+    }
+
+    /**
+     * @throws InternalErrorException
+     */
+    public function honorerRDV(string $id_prat, string $id_rdv, bool $statut): void {
+        try {
+            if($statut) {
+                $this->rdv_pdo->query("UPDATE rdv SET status = 2 WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
+            } else {
+                $this->rdv_pdo->query("UPDATE rdv SET status = -1 WHERE id = '$id_rdv' AND praticien_id = '$id_prat'");
+            }
+        } catch (\Throwable) {
+            throw new InternalErrorException("Erreur lors de l'execution de la requete SQL. STatut : " . $statut);
+        }
     }
 }
