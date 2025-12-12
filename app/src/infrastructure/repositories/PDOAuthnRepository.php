@@ -44,7 +44,7 @@ class PDOAuthnRepository implements AuthnRepositoryInterface {
         }
     }
 
-    public function saveUser(CredentialsDTO $cred, ?int $role = 0): void
+    public function saveUser(CredentialsDTO $cred, ?int $role = 1): void
     {
         try {
             $id = Uuid::uuid4()->toString();

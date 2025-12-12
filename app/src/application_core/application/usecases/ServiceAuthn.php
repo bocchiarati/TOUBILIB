@@ -43,7 +43,7 @@ class ServiceAuthn implements ServiceAuthnInterface {
         return JWT::encode($payload, $this->secretKey, 'HS512');
     }
 
-    public function register(InputUserDTO $user_dto, ?int $role = 0): array {
+    public function register(InputUserDTO $user_dto, ?int $role = 1): array {
         try {
             $passwordhash = password_hash($user_dto->password, PASSWORD_BCRYPT);
             $credential = new CredentialsDTO($user_dto->email, $passwordhash);

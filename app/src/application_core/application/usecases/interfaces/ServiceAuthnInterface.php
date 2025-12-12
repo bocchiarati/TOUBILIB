@@ -14,5 +14,5 @@ interface ServiceAuthnInterface {
      */
     public function login(InputAuthnDTO $user_dto, string $host) : string; // Modifié ici
 
-    public function register(InputUserDTO $user_dto, ?int $role = 0): array;
+    public function register(InputUserDTO $user_dto, ?int $role = 1): array;
 }
