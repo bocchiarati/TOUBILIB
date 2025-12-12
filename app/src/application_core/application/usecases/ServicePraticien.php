@@ -2,6 +2,7 @@
 
 namespace toubilib\core\application\usecases;
 use Exception;
+use toubilib\api\dtos\IndisponibiliteDTO;
 use toubilib\api\dtos\PraticienDTO;
 use toubilib\core\application\usecases\interfaces\ServicePraticienInterface;
 use toubilib\core\exceptions\EntityNotFoundException;
@@ -62,5 +63,27 @@ class ServicePraticien implements ServicePraticienInterface {
             moyens_paiement: $praticien->moyens_paiement,
             motifs_visite: $praticien->motifs_visite,
         );
+    }
+
+    public function addIndisponibilite(string $id_prat, string $date_debut, string $date_fin) {
+        try {
+            $this->praticienRepository->addIndisponibilite($id_prat, $date_debut, $date_fin);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getIndisponibilite(string $id_prat) : array {
+        try {
+            $indisponibilites = $this->praticienRepository->getIndisponibilite($id_prat);
+            $res = [];
+
+            foreach ($indisponibilites as $indisponibilite) {
+                $res[] = new IndisponibiliteDTO($indisponibilite["date_heure_debut"], $indisponibilite["date_heure_fin"]);
+            }
+            return $res;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

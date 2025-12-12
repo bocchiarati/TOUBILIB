@@ -76,5 +76,12 @@ CREATE TABLE "public"."structure" (
     "telephone" character varying(24)
 ) WITH (oids = false);
 
+DROP TABLE IF EXISTS "indisponibilite";
+CREATE TABLE "public"."indisponibilite" (
+    "id" uuid DEFAULT gen_random_uuid() NOT NULL,
+    "praticien_id" uuid NOT NULL,
+    "date_heure_debut" timestamp NOT NULL,
+    "date_heure_fin" timestamp NOT NULL
+) WITH (oids = false);
 
 -- 2025-06-30 12:31:32.033009+00

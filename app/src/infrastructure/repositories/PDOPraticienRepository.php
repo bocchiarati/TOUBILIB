@@ -138,4 +138,23 @@ class PDOPraticienRepository implements PraticienRepositoryInterface {
         $res = $moyens_paiement->fetchAll(PDO::FETCH_ASSOC);
         return array_column($res, "moyen_paiement");
     }
+
+    public function addIndisponibilite(string $id_prat, string $date_debut, string $date_fin) {
+        try {
+            $this->prati_pdo->query("INSERT INTO indisponibilite(praticien_id, date_heure_debut, date_heure_fin) VALUES ('$id_prat', '$date_debut', '$date_fin')");
+        } catch(\Throwable $e) {
+            throw new Exception("Erreur lors de l'ajout d'une nouvelle indisponibilite du praticien. message : " . $e->getMessage());
+        }
+    }
+
+    public function getIndisponibilite(string $id_prat) : array {
+        try {
+            $indisponibilites = $this->prati_pdo->query("SELECT * FROM indisponibilite WHERE praticien_id = '$id_prat'");
+
+        } catch (\Throwable $e) {
+            throw new Exception("Erreur lors de la recuperation des indisponibilites du praticien.");
+        }
+        $res = $indisponibilites->fetchAll(PDO::FETCH_ASSOC);
+        return $res;
+    }
 }

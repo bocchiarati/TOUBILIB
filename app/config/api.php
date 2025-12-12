@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Container\ContainerInterface;
+use toubilib\api\actions\AjouterIndisponibiliteAction;
 use toubilib\api\actions\AnnulerRdvAction;
 use toubilib\api\actions\CreateRdvAction;
 use toubilib\api\actions\PatientRdvAction;
@@ -14,6 +15,7 @@ use toubilib\api\actions\ValiderRdvAction;
 use toubilib\api\middlewares\AuthnSigninValidationMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvDetailMiddleware;
 use toubilib\api\middlewares\AuthzAccessRdvsMiddleware;
+use toubilib\api\middlewares\AuthzCreationIndisponibiliteMiddleware;
 use toubilib\api\middlewares\AuthzCreationMiddleware;
 use toubilib\api\middlewares\AuthzSuppressionMiddleware;
 use toubilib\api\middlewares\JwtAuthMiddleware;
@@ -48,6 +50,10 @@ return [
         return new ValiderRdvAction($c->get(ServiceRendezVousInterface::class));
     },
 
+    AjouterIndisponibiliteAction::class=> function (ContainerInterface $c) {
+        return new AjouterIndisponibiliteAction($c->get(ServicePraticienInterface::class));
+    },
+
     SigninAction::class=> function (ContainerInterface $c) {
         return new SigninAction($c->get(ServiceAuthnInterface::class));
     },
@@ -60,6 +66,10 @@ return [
 
     AuthzCreationMiddleware::class => function (ContainerInterface $c) {
         return new AuthzCreationMiddleware($c->get(ServiceAuthzPatientInterface::class), $c->get(ServiceAuthzPraticienInterface::class));
+    },
+
+    AuthzCreationIndisponibiliteMiddleware::class => function (ContainerInterface $c) {
+        return new AuthzCreationIndisponibiliteMiddleware($c->get(ServiceAuthzPraticienInterface::class));
     },
 
     AuthzAccessRdvsMiddleware::class => function (ContainerInterface $c) {

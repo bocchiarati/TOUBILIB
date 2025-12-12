@@ -132,6 +132,17 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             throw new CreneauException("Les horaires de fin du rdv ne peuvent etre avant les horaires de debut.");
         }
 
+        $indisponibilites = $this->servicePraticien->getIndisponibilite($dto->praticien_id);
+        foreach ($indisponibilites as $indisponibilite) {
+            if (
+                $date_heure_debut >= $indisponibilite->date_debut ||
+                $date_heure_debut <= $indisponibilite->date_fin ||
+                $date_heure_fin >= $indisponibilite->date_debut ||
+                $date_heure_fin <= $indisponibilite->date_fin
+            ) {
+                throw new CreneauException("Le praticien est indisponible durant cette periode");
+            }
+        }
 
         $nJourDebut = (int)$date_heure_debut->format('N');
         $nJourFin = (int)$date_heure_fin->format('N');
@@ -147,7 +158,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         try {
             //vérification praticien disponible
-            $rdvs = $this->listerRDV($dto->praticien_id, $dto->date_heure_debut, $dto->date_heure_fin);
+            $rdvs = $this->listerRDV(0, $dto->praticien_id, $dto->date_heure_debut, $dto->date_heure_fin);
         } catch (\Exception $e) {
             throw new Exception("Erreur liste des RDV");
         }
@@ -164,7 +175,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
         return [
             'success' => true,
-            "message" => "RDV cree."
+            "message" => "RDV cree.",
+            "indisponibilites" => $dto->praticien_id,
         ];
 
     }
@@ -174,7 +186,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
      */
     public function annulerRendezVous($id_prat, $id_rdv): array {
         try {
-            $rdv = $this->rendezVousRepository->getRDV($id_prat, $id_rdv);
+            $rdv = $this->rendezVousRepository->getRDV(0, $id_prat, $id_rdv);
             $rdv->annuler();
             return [
                 "success" => true,
